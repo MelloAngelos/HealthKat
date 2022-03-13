@@ -285,42 +285,43 @@ class _RegisterState extends State<Register> {
                 ),
                 Visibility(
                   visible: isSwitched,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 50,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: _image != null
-                                ? Image.file(
-                              _image,
-                              fit: BoxFit.cover,
-                            )
-                                : Icon(
-                              Icons.supervised_user_circle,
-                              size: 50,
-                              color: Colors.green[700],
+                  child:
+                    Column(
+                      children: [
+                        MaterialButton(
+                          onPressed: () {
+                            getImage();
+                          },
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 50,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: _image != null
+                                  ? Image.file(
+                                _image,
+                                fit: BoxFit.cover,
+                              )
+                                  : Icon(
+                                Icons.supervised_user_circle,
+                                size: 50,
+                                color: Colors.green[700],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      TextButton(
-                        child: Text(
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Center( child: Text(
                           'Change profile photo',
                           style: TextStyle(color: Colors.white, fontSize: 15),
+                        )),
+                        SizedBox(
+                          height: 10,
                         ),
-                        onPressed: () {
-                          getImage();
-                        },
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                  ),
+                      ]
+                    )
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
