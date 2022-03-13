@@ -44,14 +44,11 @@ class CurrentUser extends ChangeNotifier {
         .doc(loggedInUser.uid)
         .get()
         .then((document) {
-      print(document.data()['photoUrl']);
       displayName = document.data()['displayName'];
       photoUrl = document.data()['photoUrl'];
       isDoctor = document.data()['isDoctor'];
       phoneNumber = document.data()['number'];
       address = document.data()['address'];
-      print(displayName);
-      print(address);
       notifyListeners();
     });
   }

@@ -40,7 +40,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
     return ModalProgressHUD(
       inAsyncCall: loading,
       child: Scaffold(
-        backgroundColor: Color(0xFF0A0E21),
+        backgroundColor: Colors.greenAccent[400],
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -81,7 +81,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.exit_to_app),
+                  icon: Icon(Icons.exit_to_app, color: Colors.white,size: 32,),
                   onPressed: () async {
                     await FirebaseAuth.instance.signOut().then((value) {
                       Navigator.of(context).popUntil((route) => route.isFirst);

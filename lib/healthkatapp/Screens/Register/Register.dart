@@ -138,6 +138,13 @@ class _RegisterState extends State<Register> {
         if (user != null) {
           print("User created!");
           _user = await _auth.currentUser;
+          print(_nameController.text);
+          print(_ageController.text);
+          print(_phoneController.text);
+          print(_addressController.text);
+          print(_specialityController.text);
+          print(isSwitched);
+
           await _firestore
               .collection('users')
               .doc(_user.uid)
@@ -295,7 +302,7 @@ class _RegisterState extends State<Register> {
                                 : Icon(
                               Icons.supervised_user_circle,
                               size: 50,
-                              color: Colors.deepPurple,
+                              color: Colors.green[700],
                             ),
                           ),
                         ),
@@ -452,7 +459,6 @@ class _RegisterState extends State<Register> {
                       style: TextStyle(
                         color: Colors.white,
                       ),
-                      keyboardType: TextInputType.number,
                       //controller: passwordController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -548,7 +554,7 @@ class _RegisterState extends State<Register> {
                                 fontSize: 20.0,
                                 fontFamily: 'Mulish',
                                 fontWeight: FontWeight.w700,
-                                color: Colors.green[600],
+                                color: Colors.green[700],
                       )),
                       onPressed: () async => await isSwitched?uploadFile(context):signUp(context, null),
                       shape: const StadiumBorder()

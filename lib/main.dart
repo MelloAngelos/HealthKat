@@ -24,8 +24,9 @@ class HealthKatApp extends StatelessWidget {
           builder: BotToastInit(),
           navigatorObservers: [BotToastNavigatorObserver()],
           //0xFFFE871E
+
           theme: ThemeData(
-            primarySwatch: Colors.red,
+            primarySwatch: Colors.green,
           ),
           home: Intro(),
           debugShowCheckedModeBanner: false,
