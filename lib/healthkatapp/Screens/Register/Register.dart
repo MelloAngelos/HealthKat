@@ -87,24 +87,25 @@ class _RegisterState extends State<Register> {
     }
   }
 
-  Future uploadFile(c) async {
-    FirebaseStorage storage = FirebaseStorage.instance;
-    Reference storageReference = storage.ref().child(
-        'profile/${_mailController.text}');
-    UploadTask uploadTask = storageReference.putFile(croppedImage);
-    await uploadTask.whenComplete(() {
-      print('File Uploaded');
-      storageReference.getDownloadURL().then((fileURL) async{
-        await signUp(c, fileURL);
-        setState(() {
-          _uploadedFileURL = fileURL;
-          imgUrl = fileURL;
-
+  Future uploadFile(context) async {
+    if(croppedImage != null) {
+      FirebaseStorage storage = FirebaseStorage.instance;
+      Reference storageReference = storage.ref().child(
+          'profile/${_mailController.text}');
+      UploadTask uploadTask = storageReference.putFile(croppedImage);
+      await uploadTask.whenComplete(() {
+        print('File Uploaded');
+        storageReference.getDownloadURL().then((fileURL) async {
+          await signUp(context, fileURL);
+          setState(() {
+            _uploadedFileURL = fileURL;
+            imgUrl = fileURL;
+          });
         });
+      }).catchError((onError) {
+        print(onError);
       });
-    }).catchError((onError) {
-      print(onError);
-    });
+    }
   }
 
   Future signUp(c, url) async{
@@ -173,9 +174,7 @@ class _RegisterState extends State<Register> {
           }
 
         }
-      on FirebaseAuthException catch (e) {
-        print(e);
-      } catch (error) {
+      on FirebaseAuthException catch (error) {
         setState(() {
           _loading=false;
           errorText='Check your email/password combination!';
@@ -185,44 +184,60 @@ class _RegisterState extends State<Register> {
         print(error.code);
 
         switch (error.code) {
-          case "ERROR_INVALID_EMAIL":
+          case "email-already-in-use":
+            setState(() {
+              mailErrorText = "Email address already in use by another user.";
+              errorText = null;
+              validateMail = true;
+              validatePassword = false;
+            });
+            break;
+          case "invalid-email":
             setState(() {
               mailErrorText = "Your email address appears to be malformed.";
-              errorText=null;
-              validateMail=true;
-              validatePassword=false;
+              errorText = null;
+              validateMail = true;
+              validatePassword = false;
             });
             break;
-          case "ERROR_EMAIL_ALREADY_IN_USE":
+          case "wrong-password":
             setState(() {
-              mailErrorText = "The email address is already in use by another account.";
-              errorText=null;
-              validateMail=true;
-              validatePassword=false;
+              errorText = "Wrong password!";
+              mailErrorText = null;
+              validateMail = false;
+              validatePassword = true;
             });
             break;
-          case "ERROR_USER_DISABLED":
+          case "user-not-found":
+            setState(() {
+              mailErrorText = "User with this email doesn't exist.";
+              errorText = null;
+              validateMail = true;
+              validatePassword = false;
+            });
+            break;
+          case "user-disabled":
             setState(() {
               mailErrorText = "User with this email has been disabled.";
-              errorText=null;
-              validateMail=true;
-              validatePassword=false;
+              errorText = null;
+              validateMail = true;
+              validatePassword = false;
             });
             break;
-          case "ERROR_TOO_MANY_REQUESTS":
+          case "too-many-requests":
             setState(() {
               errorText = "Too many requests. Try again later.";
-              mailErrorText=null;
-              validateMail=false;
-              validatePassword=true;
+              mailErrorText = null;
+              validateMail = false;
+              validatePassword = true;
             });
             break;
-          case "ERROR_NETWORK_REQUEST_FAILED":
+          case "network-request-failed":
             setState(() {
-              errorText='The internet connection appears to be offline';
-              mailErrorText=null;
-              validateMail=false;
-              validatePassword=true;
+              errorText = 'The internet connection appears to be offline';
+              mailErrorText = null;
+              validateMail = false;
+              validatePassword = true;
             });
           break;
         }

@@ -105,9 +105,7 @@ class _State extends State<Login> {
           }
         }
       }
-    } on FirebaseAuthException catch (e) {
-      print(e);
-    } catch (error) {
+    } on FirebaseAuthException catch (error) {
       setState(() {
         _loading = false;
         errorText = 'Check your email/password combination!';
@@ -117,7 +115,7 @@ class _State extends State<Login> {
       print(error.code);
 
       switch (error.code) {
-        case "ERROR_INVALID_EMAIL":
+        case "invalid-email":
           setState(() {
             mailErrorText = "Your email address appears to be malformed.";
             errorText = null;
@@ -125,7 +123,7 @@ class _State extends State<Login> {
             validatePassword = false;
           });
           break;
-        case "ERROR_WRONG_PASSWORD":
+        case "wrong-password":
           setState(() {
             errorText = "Wrong password!";
             mailErrorText = null;
@@ -133,7 +131,7 @@ class _State extends State<Login> {
             validatePassword = true;
           });
           break;
-        case "ERROR_USER_NOT_FOUND":
+        case "user-not-found":
           setState(() {
             mailErrorText = "User with this email doesn't exist.";
             errorText = null;
@@ -141,7 +139,7 @@ class _State extends State<Login> {
             validatePassword = false;
           });
           break;
-        case "ERROR_USER_DISABLED":
+        case "user-disabled":
           setState(() {
             mailErrorText = "User with this email has been disabled.";
             errorText = null;
@@ -149,7 +147,7 @@ class _State extends State<Login> {
             validatePassword = false;
           });
           break;
-        case "ERROR_TOO_MANY_REQUESTS":
+        case "too-many-requests":
           setState(() {
             errorText = "Too many requests. Try again later.";
             mailErrorText = null;
@@ -157,7 +155,7 @@ class _State extends State<Login> {
             validatePassword = true;
           });
           break;
-        case "ERROR_NETWORK_REQUEST_FAILED":
+        case "network-request-failed":
           setState(() {
             errorText = 'The internet connection appears to be offline';
             mailErrorText = null;
@@ -291,7 +289,7 @@ class _State extends State<Login> {
                       width: MediaQuery.of(context).size.height * 0.28,
                       padding: EdgeInsets.all(5),
                       child: RawMaterialButton(
-                          fillColor: Colors.white,
+                          fillColor: Colors.green[700],
                           child: Text(
                               'LOGIN',
                               maxLines: 1,
@@ -299,7 +297,7 @@ class _State extends State<Login> {
                                 fontSize: 20.0,
                                 fontFamily: 'Mulish',
                                 fontWeight: FontWeight.w700,
-                                color: Colors.green[700],
+                                color: Colors.white,
                               )),
                           onPressed: () async => await logIn(),
                           shape: const StadiumBorder()
