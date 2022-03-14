@@ -18,7 +18,7 @@ class GeneratedFinalremovebg2Widget9 extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.zero,
             child: Image.asset(
-              "assets/images/e2d8d45024b98f2c2e70b2467761b0cdd8a07c7a.png",
+              "assets/images/logo.png",
               color: null,
               fit: BoxFit.cover,
               width: 53.0,

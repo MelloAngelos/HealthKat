@@ -138,12 +138,6 @@ class _RegisterState extends State<Register> {
         if (user != null) {
           print("User created!");
           _user = await _auth.currentUser;
-          print(_nameController.text);
-          print(_ageController.text);
-          print(_phoneController.text);
-          print(_addressController.text);
-          print(_specialityController.text);
-          print(isSwitched);
 
           await _firestore
               .collection('users')
@@ -353,7 +347,7 @@ class _RegisterState extends State<Register> {
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        borderSide: BorderSide(width: 1,color: Colors.green[900]),
+                        borderSide: BorderSide(width: 1,color: Colors.white),
                       ),
                       prefixIcon: Icon(Icons.perm_contact_calendar,
                           color: Colors.green[700]),
@@ -408,7 +402,7 @@ class _RegisterState extends State<Register> {
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        borderSide: BorderSide(width: 1,color: Colors.green[900]),
+                        borderSide: BorderSide(width: 1,color: Colors.white),
                       ),
                       prefixIcon: Icon(Icons.phone,
                           color: Colors.green[700]),
@@ -494,7 +488,7 @@ class _RegisterState extends State<Register> {
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        borderSide: BorderSide(width: 1,color: Colors.green[900]),
+                        borderSide: BorderSide(width: 1,color: Colors.white),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
@@ -540,7 +534,7 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
                 SizedBox(
-                  height: 27,
+                  height: 20,
                 ),
                 Center(child:Container(
                     height: MediaQuery.of(context).size.height * 0.08,

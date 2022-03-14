@@ -9,12 +9,11 @@ class Intro extends StatelessWidget {
     return Material(
       color: Colors.greenAccent[400],
       child: Stack(
-            fit: StackFit.expand,
             alignment: Alignment.center,
             children: [
               Positioned(
-                left: MediaQuery.of(context).size.height * 0.09,
-                top: MediaQuery.of(context).size.height * 0.08,
+                left: MediaQuery.of(context).size.height * 0.11,
+                top: MediaQuery.of(context).size.height * 0.12,
                 child: TransformHelper.rotate(
                     a: 1.00,
                     b: 0.00,
@@ -22,10 +21,10 @@ class Intro extends StatelessWidget {
                     d: 1.00,
                     child: Container(
                         child: Image.asset(
-                          "assets/images/e2d8d45024b98f2c2e70b2467761b0cdd8a07c7a.png",
+                          "assets/images/logo.png",
                           fit: BoxFit.cover,
-                          width: 300.0,
-                          height: 300.0,
+                          width: 200.0,
+                          height: 200.0,
                         ),
                       ),
                     ),
