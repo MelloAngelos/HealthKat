@@ -75,7 +75,6 @@ class CurrentUser extends ChangeNotifier {
   Future acceptRequest(uid, index) async {
     DocumentReference doctorRef = FirebaseFirestore.instance.doc('users/' + uid);
 
-    var val = ['$uid'];
     await firestore.runTransaction((transaction) async {
       DocumentSnapshot freshSnap1 = await transaction.get(doctorRef);
 
@@ -91,7 +90,6 @@ class CurrentUser extends ChangeNotifier {
   Future declineRequest(uid, index) async {
     DocumentReference doctorRef = FirebaseFirestore.instance.doc('users/' + uid);
 
-    var val = ['$uid'];
     await firestore.runTransaction((transaction) async {
       DocumentSnapshot freshSnap1 = await transaction.get(doctorRef);
 

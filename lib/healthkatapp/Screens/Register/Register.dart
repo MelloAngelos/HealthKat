@@ -32,23 +32,22 @@ class _RegisterState extends State<Register> {
   var _mailController = TextEditingController();
   var _passwordController = TextEditingController();
   var _nameController = TextEditingController();
-  var _civilIdController = TextEditingController();
   var _ageController = TextEditingController();
   var _specialityController = TextEditingController();
   final FocusNode _mailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   String errorText;
   String mailErrorText;
+  String nameErrorText;
+  String specialityErrorText;
   bool isSwitched = false;
 
   bool validateMail = false;
   bool validatePassword = false;
-  bool _loading = false;
+  bool validateName = false;
+  bool validateSpeciality = false;
 
-  _fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nextFocus) {
-    currentFocus.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
-  }
+  bool _loading = false;
 
   File _image;
   String _uploadedFileURL;
@@ -115,9 +114,30 @@ class _RegisterState extends State<Register> {
 
     try {
 
-      if (_mailController.text==null || _mailController.text.length < 1) {
+      if (isSwitched==true && (_specialityController.text==null || _specialityController.text.length < 2)) {
         setState(() {
+          validatePassword=false;
+          validateMail=false;
+          validateSpeciality=true;
+          validateName=false;
+          specialityErrorText='Enter a valid speciality!';
+          _loading=false;
+        });
+      } else if (_nameController.text==null || _nameController.text.length < 3) {
+        setState(() {
+          validatePassword=false;
+          validateMail=false;
+          validateSpeciality=false;
+          validateName=true;
+          nameErrorText='Enter a valid name!';
+          _loading=false;
+        });
+      } else if (_mailController.text==null || _mailController.text.length < 6) {
+        setState(() {
+          validatePassword=false;
           validateMail=true;
+          validateSpeciality=false;
+          validateName=false;
           mailErrorText='Enter a valid e-mail!';
           _loading=false;
         });
@@ -125,6 +145,8 @@ class _RegisterState extends State<Register> {
         setState(() {
           validatePassword=true;
           validateMail=false;
+          validateSpeciality=false;
+          validateName=false;
           errorText='Password should contain at least 8 characters!';
           _loading=false;
         });
@@ -146,7 +168,6 @@ class _RegisterState extends State<Register> {
               .set({
             'uid': _user.uid,
             'displayName': _nameController.text,
-            'civilId': _civilIdController.text,
             'age':_ageController.text,
             'phone':_phoneController.text,
             'address':_addressController.text,
@@ -154,7 +175,7 @@ class _RegisterState extends State<Register> {
             'isDoctor':isSwitched,
             'isVerified':isSwitched?false:null,
             'profile':url,
-            'indexList':isSwitched?indexing(_nameController.text):null,
+            'indexList':indexing(_nameController.text),
             'specialityIndex':isSwitched?indexing(_specialityController.text):null,
             'timestamp': FieldValue.serverTimestamp(),
           });
@@ -169,7 +190,8 @@ class _RegisterState extends State<Register> {
               return VerificationScreen(false);
             }));
           } else {
-            Navigator.pushNamed(context, '/Homepage');
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/Homepage', (Route<dynamic> route) => false);
             }
           }
 
@@ -269,6 +291,11 @@ class _RegisterState extends State<Register> {
         inAsyncCall: _loading,
         child: Scaffold(
           appBar: AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/Intro', (Route<dynamic> route) => false),
+              ),
               backgroundColor: Colors.transparent,
               elevation: 0,
           ),
@@ -324,6 +351,7 @@ class _RegisterState extends State<Register> {
                         ),
                         Center( child: Text(
                           'Change profile photo',
+
                           style: TextStyle(color: Colors.white, fontSize: 15),
                         )),
                         SizedBox(
@@ -349,6 +377,37 @@ class _RegisterState extends State<Register> {
                     Text('Doctor', style: TextStyle(color: Colors.white),),
                   ],
                 ),
+                Visibility(
+                  visible: isSwitched,
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: TextField(
+                      controller: _specialityController,
+                      textInputAction: TextInputAction.next,
+                      onSubmitted: (_) => FocusScope.of(context).nextFocus(),
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                      //controller: passwordController,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: BorderSide(width: 1,color: Colors.green[900]),
+                        ),
+                        prefixIcon: Icon(Icons.content_paste,
+                            color: Colors.green[700]),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        //labelText: 'Password',
+                        hintText: 'Speciality',
+                        errorText: validateSpeciality ? specialityErrorText : null,
+                        hintStyle: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                   child:  TextField(
@@ -371,6 +430,7 @@ class _RegisterState extends State<Register> {
                       ),
                       //labelText: 'Password',
                       hintText: 'Name',
+                      errorText: validateName ? nameErrorText : null,
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
@@ -458,36 +518,6 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                 ),
-                Visibility(
-                  visible: isSwitched,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: TextField(
-                      controller: _specialityController,
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                      //controller: passwordController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          borderSide: BorderSide(width: 1,color: Colors.green[900]),
-                        ),
-                        prefixIcon: Icon(Icons.content_paste,
-                            color: Colors.green[700]),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        //labelText: 'Password',
-                        hintText: 'Speciality',
-                        hintStyle: TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                  ),
-                ),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                   child: TextField(
@@ -566,11 +596,12 @@ class _RegisterState extends State<Register> {
                                 fontWeight: FontWeight.w700,
                                 color: Colors.green[700],
                       )),
-                      onPressed: () async => await isSwitched?uploadFile(context):signUp(context, null),
+                      onPressed: () async => await (isSwitched && _image!=null)?uploadFile(context):signUp(context, null),
                       shape: const StadiumBorder()
                     ))),
                 TextButton(
-                  onPressed: () => Navigator.pushNamed(context, '/Login'),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamedAndRemoveUntil('/Login', (Route<dynamic> route) => false),
                   child: Text(
                     'Already a member? Login now!',
                     style: TextStyle(fontSize: 16, color: Colors.green[900]),),

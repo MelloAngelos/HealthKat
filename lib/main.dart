@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/healthkatapp/Screens/Admin/Admin.dart';
 import 'package:flutterapp/healthkatapp/Screens/Intro/Intro.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:provider/provider.dart';
 import './healthkatapp/current_user.dart';
+import 'healthkatapp/Screens/Discover/Discover.dart';
 import 'healthkatapp/Screens/Homepage/Homepage.dart';
 import 'healthkatapp/Screens/Login/Login.dart';
 import 'healthkatapp/Screens/Register/Register.dart';
@@ -36,6 +38,10 @@ class HealthKatApp extends StatelessWidget {
             '/Register': (context) => Register(),
             '/Login': (context) => Login(),
             '/Homepage': (context) => Homepage(),
+            '/Admin': (context) => Admin(),
+            '/Discover': (context) => Discover(),
+
+
           }
       )
     );

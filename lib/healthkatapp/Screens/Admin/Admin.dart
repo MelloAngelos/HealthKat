@@ -15,7 +15,7 @@ class Admin extends StatefulWidget {
 class _AdminScreenState extends State<Admin> {
 
 
-  bool loading;
+  bool loading = false;
 
   @override
   void didChangeDependencies() {

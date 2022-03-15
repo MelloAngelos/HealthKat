@@ -95,13 +95,11 @@ class _State extends State<Login> {
               return VerificationScreen(isVerified);
             }));
           } else if (admin!=null || admin == true){
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-              return Admin();
-            }));
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/Admin', (Route<dynamic> route) => false);
           } else {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-              return Homepage();
-            }));
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/Homepage', (Route<dynamic> route) => false);
           }
         }
       }
@@ -172,170 +170,175 @@ class _State extends State<Login> {
     return GestureDetector(
         onTap: () {
       FocusScope.of(context).unfocus();
-    },
-    child: ModalProgressHUD(
-      inAsyncCall: _loading,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        backgroundColor: Colors.greenAccent[400],
-        body: Container(
-          child: ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.all(10.0),
-          children: <Widget>[
-            Column(
-                children: <Widget>[
-                  Center (
-                    child:
-                    TransformHelper.rotate(
-                      a: 1.00,
-                      b: 0.00,
-                      c: -0.00,
-                      d: 1.00,
-                      child: Container(
-                        child: Image.asset(
-                          "assets/images/logo.png",
-                          fit: BoxFit.cover,
-                          width: 200.0,
-                          height: 200.0,
+      },
+      child: ModalProgressHUD(
+        inAsyncCall: _loading,
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/Intro', (Route<dynamic> route) => false)
+              },
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+          backgroundColor: Colors.greenAccent[400],
+          body: Container(
+            child: ListView(
+            shrinkWrap: true,
+            padding: const EdgeInsets.all(10.0),
+            children: <Widget>[
+              Column(
+                  children: <Widget>[
+                    Center (
+                      child:
+                      TransformHelper.rotate(
+                        a: 1.00,
+                        b: 0.00,
+                        c: -0.00,
+                        d: 1.00,
+                        child: Container(
+                          child: Image.asset(
+                            "assets/images/logo.png",
+                            fit: BoxFit.cover,
+                            width: 200.0,
+                            height: 200.0,
+                          ),
                         ),
-                      ),
-                    )
-                  ),
-                  Center(
-                    child: Text(
-                      'Login',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 40,
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
-                      ),
-                    )
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    child: TextField(
-                      textInputAction: TextInputAction.next,
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                      focusNode: _mailFocus,
-                      controller: _mailController,
-                      keyboardType: TextInputType.emailAddress,
-                      onSubmitted: (value) {
-                        _fieldFocusChange(context, _mailFocus, _passwordFocus);
-                      },
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          borderSide: BorderSide(width: 1,color: Colors.white),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.person,
-                          color: Colors.green[700],
-                        ),
-                        border:
-                        OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        fillColor: Colors.white,
-                        hintText: 'Email',
-                        errorText: validateMail ? mailErrorText : null,
-                        hintStyle: new TextStyle(color: Colors.grey),
-                        //labelText: 'User Name',
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: new TextField(
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                      focusNode: _passwordFocus,
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          borderSide: BorderSide(width: 1,color: Colors.white),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        errorText: validatePassword ? errorText : null,
-                        //labelText: 'Password',
-                        hintText: 'Password',
-                        prefixIcon: Icon(Icons.lock,
-                            color: Colors.green[700]),
-                        hintStyle: new TextStyle(color: Colors.grey),
-                      ),
-                      onSubmitted: (value) => logIn(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                    child:Container(
-                      height: MediaQuery.of(context).size.height * 0.08,
-                      width: MediaQuery.of(context).size.height * 0.28,
-                      padding: EdgeInsets.all(5),
-                      child: RawMaterialButton(
-                          fillColor: Colors.green[700],
-                          child: Text(
-                              'LOGIN',
-                              maxLines: 1,
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                fontFamily: 'Mulish',
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              )),
-                          onPressed: () async => await logIn(),
-                          shape: const StadiumBorder()
                       )
-                    )
-                  ),
-
-                  Container(
-                    child: Row(
-                      children: <Widget>[
-                        Text(
-                          "Don't have an account?",
-                          style: TextStyle(color: Colors.white,
-                              fontSize: 16),
-                        ),
-                        TextButton(
-                            child: Text(
-                              'Register here',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Register()),
-                              );
-                            }
-                        )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
                     ),
-                  ),
+                    Center(
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 40,
+                          color: Colors.white,
+                          fontFamily: 'Nunito',
+                        ),
+                      )
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: TextField(
+                        textInputAction: TextInputAction.next,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        focusNode: _mailFocus,
+                        controller: _mailController,
+                        keyboardType: TextInputType.emailAddress,
+                        onSubmitted: (value) {
+                          _fieldFocusChange(context, _mailFocus, _passwordFocus);
+                        },
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                            borderSide: BorderSide(width: 1,color: Colors.white),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: Colors.green[700],
+                          ),
+                          border:
+                          OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          fillColor: Colors.white,
+                          hintText: 'Email',
+                          errorText: validateMail ? mailErrorText : null,
+                          hintStyle: new TextStyle(color: Colors.grey),
+                          //labelText: 'User Name',
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: new TextField(
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        focusNode: _passwordFocus,
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                            borderSide: BorderSide(width: 1,color: Colors.white),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          errorText: validatePassword ? errorText : null,
+                          //labelText: 'Password',
+                          hintText: 'Password',
+                          prefixIcon: Icon(Icons.lock,
+                              color: Colors.green[700]),
+                          hintStyle: new TextStyle(color: Colors.grey),
+                        ),
+                        onSubmitted: (value) => logIn(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child:Container(
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        width: MediaQuery.of(context).size.height * 0.28,
+                        padding: EdgeInsets.all(5),
+                        child: RawMaterialButton(
+                            fillColor: Colors.green[700],
+                            child: Text(
+                                'LOGIN',
+                                maxLines: 1,
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontFamily: 'Mulish',
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                )),
+                            onPressed: () async => await logIn(),
+                            shape: const StadiumBorder()
+                        )
+                      )
+                    ),
+  
+                    Container(
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Don't have an account?",
+                            style: TextStyle(color: Colors.white,
+                                fontSize: 16),
+                          ),
+                          TextButton(
+                              child: Text(
+                                'Register here',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pushNamedAndRemoveUntil('/Register', (Route<dynamic> route) => false);
+                              }
+                          )
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                    ),
+                ]),
               ]),
-            ]),
-          )
+            )
+        )
       )
-    ));
+    );
   }
 }
