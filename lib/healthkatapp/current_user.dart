@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'user.dart';
 
 class CurrentUser extends ChangeNotifier {
-
   User loggedInUser;
   FirebaseAuth auth = FirebaseAuth.instance;
   var firestore = FirebaseFirestore.instance;
@@ -19,7 +18,6 @@ class CurrentUser extends ChangeNotifier {
   bool isDoctor;
 
   List<User_profile> requests = [];
-
 
   Future getCurrentUser() async {
     try {
@@ -47,7 +45,7 @@ class CurrentUser extends ChangeNotifier {
       displayName = document.data()['displayName'];
       photoUrl = document.data()['photoUrl'];
       isDoctor = document.data()['isDoctor'];
-      phoneNumber = document.data()['number'];
+      phoneNumber = document.data()['phone'];
       address = document.data()['address'];
       notifyListeners();
     });
@@ -57,23 +55,25 @@ class CurrentUser extends ChangeNotifier {
     requests.clear();
     await firestore
         .collection('users')
-        .where('isVerified', isEqualTo: false).get()
-        .then((QuerySnapshot<Map<String,dynamic>> document) async {
-          document.docs.forEach((DocumentSnapshot<Map<String,dynamic>> request) {
-            print(request.data);
-            requests.add(User_profile(
-              name: request.data()['displayName'],
-              photoUrl: request.data()['profile'],
-              uid: request.data()['uid'],
-              isDoctor: request.data()['isDoctor'],
-            ));
-          });
-        });
+        .where('isVerified', isEqualTo: false)
+        .get()
+        .then((QuerySnapshot<Map<String, dynamic>> document) async {
+      document.docs.forEach((DocumentSnapshot<Map<String, dynamic>> request) {
+        print(request.data);
+        requests.add(User_profile(
+          name: request.data()['displayName'],
+          photoUrl: request.data()['profile'],
+          uid: request.data()['uid'],
+          isDoctor: request.data()['isDoctor'],
+        ));
+      });
+    });
     notifyListeners();
   }
 
   Future acceptRequest(uid, index) async {
-    DocumentReference doctorRef = FirebaseFirestore.instance.doc('users/' + uid);
+    DocumentReference doctorRef =
+        FirebaseFirestore.instance.doc('users/' + uid);
 
     await firestore.runTransaction((transaction) async {
       DocumentSnapshot freshSnap1 = await transaction.get(doctorRef);
@@ -88,7 +88,8 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future declineRequest(uid, index) async {
-    DocumentReference doctorRef = FirebaseFirestore.instance.doc('users/' + uid);
+    DocumentReference doctorRef =
+        FirebaseFirestore.instance.doc('users/' + uid);
 
     await firestore.runTransaction((transaction) async {
       DocumentSnapshot freshSnap1 = await transaction.get(doctorRef);
@@ -101,6 +102,4 @@ class CurrentUser extends ChangeNotifier {
     requests.removeAt(index);
     notifyListeners();
   }
-
-
 }
