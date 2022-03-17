@@ -11,7 +11,7 @@ class GeneratedFAB3MiniRestingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/GeneratedProfileWidget'),
+      onTap: () => Navigator.pushNamed(context, '/Profile'),
       child: Container(
         width: 38.293304443359375,
         height: 40.0,

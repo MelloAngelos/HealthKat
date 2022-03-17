@@ -37,39 +37,40 @@ class _HomepageScreenState extends State<Homepage> {
     return Scaffold(
       appBar: AppBar(
         leading: TransformHelper.rotate(
-                      a: 1.00,
-                      b: 0.00,
-                      c: -0.00,
-                      d: 1.00,
-                      child: Container(
-                        child: Image.asset(
-                          "assets/images/logo.png",
-                          width: 50.0,
-                          height: 50.0,
-                        ),
-                      ),
+          a: 1.00,
+          b: 0.00,
+          c: -0.00,
+          d: 1.00,
+          child: Container(
+            child: Image.asset(
+              "assets/images/logo.png",
+              width: 50.0,
+              height: 50.0,
+            ),
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.exit_to_app, color: Colors.black,),
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.black,
+            ),
             onPressed: () async {
               await FirebaseAuth.instance.signOut().then((value) {
                 Navigator.of(context).popUntil((route) => route.isFirst);
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) {
-                      return Login();
-                    }));
+                  return Login();
+                }));
               });
             },
           ),
           // overflow menu
-
         ],
       ),
-
       body: ModalProgressHUD(
         inAsyncCall: loading_,
         child: SafeArea(
@@ -86,20 +87,37 @@ class _HomepageScreenState extends State<Homepage> {
                           width: 20,
                         ),
                         CircleAvatar(
-                            radius: 24,
-                            child: ClipRRect(
+                          radius: 24,
+                          child: ClipRRect(
                               borderRadius: BorderRadius.circular(50),
-                              child: userData.photoUrl!=null?FadeInImage(
-                                image: NetworkImage(userData.photoUrl),
-                                placeholder: AssetImage('assets/images/placeholder.png'),
-                              ):Image.asset('assets/images/placeholder.png'),
-                            ),
-                          ),
+                              child: userData.photoUrl != null
+                                  ? IconButton(
+                                      padding: EdgeInsets.all(0),
+                                      icon: FadeInImage(
+                                        image: NetworkImage(userData.photoUrl),
+                                        placeholder: AssetImage(
+                                            'assets/images/placeholder.png'),
+                                      ),
+                                      onPressed: () => Navigator.of(context)
+                                          .pushNamedAndRemoveUntil('/Profile',
+                                              (Route<dynamic> route) => false),
+                                    )
+                                  : IconButton(
+                                      padding: EdgeInsets.all(0),
+                                      focusColor: Colors.white,
+                                      icon: Image.asset(
+                                          'assets/images/placeholder.png'),
+                                      onPressed: () => Navigator.of(context)
+                                          .pushNamedAndRemoveUntil(
+                                              '/Profile',
+                                              (Route<dynamic> route) =>
+                                                  false))),
+                        ),
                         SizedBox(
                           width: 40,
                         ),
                         Text(
-                        'Contacts',
+                          'Contacts',
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
@@ -117,35 +135,37 @@ class _HomepageScreenState extends State<Homepage> {
                       height: 30,
                     ),
                     userData.requests.length == 0
-                        ? Center(child:Text(
-                      'You have no messages',
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w700,
-                        color: Colors.green[900],
-                        /* letterSpacing: 0.0, */
-                      ),
-                    ))
+                        ? Center(
+                            child: Text(
+                            'You have no messages',
+                            style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.05,
+                              fontFamily: 'Nunito',
+                              fontWeight: FontWeight.w700,
+                              color: Colors.green[900],
+                              /* letterSpacing: 0.0, */
+                            ),
+                          ))
                         : ListView.builder(
-                        shrinkWrap: true,
-                        //reverse: true,
-                        itemCount: userData.requests.length,
-                        itemBuilder: (context, index) {
-                          return UserTile(
-                            userName: userData.requests[index].name,
-                            photoUrl: userData.requests[index].photoUrl,
-                            request: true,
-                            accept: () async {
-                              await userData.acceptRequest(
-                                  userData.requests[index].uid, index);
-                            },
-                            decline: () async {
-                              await userData.declineRequest(
-                                  userData.requests[index].uid, index);
-                            },
-                          );
-                        }),
+                            shrinkWrap: true,
+                            //reverse: true,
+                            itemCount: userData.requests.length,
+                            itemBuilder: (context, index) {
+                              return UserTile(
+                                userName: userData.requests[index].name,
+                                photoUrl: userData.requests[index].photoUrl,
+                                request: true,
+                                accept: () async {
+                                  await userData.acceptRequest(
+                                      userData.requests[index].uid, index);
+                                },
+                                decline: () async {
+                                  await userData.declineRequest(
+                                      userData.requests[index].uid, index);
+                                },
+                              );
+                            }),
                     SizedBox(
                       height: 30,
                     ),
@@ -156,8 +176,6 @@ class _HomepageScreenState extends State<Homepage> {
           ),
         ),
       ),
-
     );
-
   }
 }

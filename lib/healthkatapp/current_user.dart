@@ -16,6 +16,7 @@ class CurrentUser extends ChangeNotifier {
   String phoneNumber;
   String address;
   bool isDoctor;
+  String speciality;
 
   List<User_profile> requests = [];
 
@@ -43,10 +44,11 @@ class CurrentUser extends ChangeNotifier {
         .get()
         .then((document) {
       displayName = document.data()['displayName'];
-      photoUrl = document.data()['photoUrl'];
+      photoUrl = document.data()['profile'];
       isDoctor = document.data()['isDoctor'];
       phoneNumber = document.data()['phone'];
       address = document.data()['address'];
+      speciality = document.data()['speciality'];
       notifyListeners();
     });
   }
