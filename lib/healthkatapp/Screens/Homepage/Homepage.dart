@@ -9,6 +9,7 @@ import '../../chatroomListTile.dart';
 import '../../current_user.dart';
 import '../Chat/Chat.dart';
 import '../Login/Login.dart';
+import '../Profile/Profile.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -95,7 +96,10 @@ class _HomepageScreenState extends State<Homepage> {
       onTap: () {
         var chatRoomId = getChatRoomIdByUids(myUid, uid);
         Map<String, dynamic> chatRoomInfoMap = {
-          "users": [myUid, uid]
+          "users": [myUid, uid],
+          "lastMessage": "",
+          "lastMessageSendTs": "",
+          "lastMessageSendBy": ""
         };
         createChatRoom(chatRoomId, chatRoomInfoMap);
         Navigator.push(
@@ -291,22 +295,20 @@ class _HomepageScreenState extends State<Homepage> {
                                             placeholder: AssetImage(
                                                 'assets/images/placeholder.png'),
                                           ),
-                                          onPressed: () => Navigator.of(context)
-                                              .pushNamedAndRemoveUntil(
-                                                  '/Profile',
-                                                  (Route<dynamic> route) =>
-                                                      false),
+                                          onPressed: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => Profile()))
                                         )
                                       : IconButton(
                                           padding: EdgeInsets.all(0),
                                           focusColor: Colors.white,
                                           icon: Image.asset(
                                               'assets/images/placeholder.png'),
-                                          onPressed: () => Navigator.of(context)
-                                              .pushNamedAndRemoveUntil(
-                                                  '/Profile',
-                                                  (Route<dynamic> route) =>
-                                                      false))),
+                                          onPressed: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => Profile()))))
                             ),
                             SizedBox(
                               width: 40,
