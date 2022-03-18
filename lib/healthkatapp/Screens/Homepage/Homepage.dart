@@ -107,7 +107,7 @@ class _HomepageScreenState extends State<Homepage> {
         child: Row(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(40),
+              borderRadius: BorderRadius.circular(50),
               child: Image.network(
                 profileUrl,
                 height: 40,

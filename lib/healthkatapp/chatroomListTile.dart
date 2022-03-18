@@ -45,12 +45,14 @@ class _ChatRoomListTileState extends State<ChatRoomListTile> {
         margin: EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(40),
-              child: Image.network(
-                profilePicUrl,
-                height: 40,
-                width: 40,
+            CircleAvatar(
+              radius: 24,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: profilePicUrl != "" ? FadeInImage(
+                  image: NetworkImage(profilePicUrl),
+                  placeholder: AssetImage('assets/images/placeholder.png'),
+                ):Image.asset('assets/images/placeholder.png'),
               ),
             ),
             SizedBox(width: 12),
