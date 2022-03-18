@@ -154,17 +154,19 @@ class _ProfileState extends State<Profile> {
                                 .showSnackBar(snackBar);
                           },
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Notifications",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.normal)),
-                              Icon(notifications == true
-                                  ? Icons.notifications
-                                  : Icons.notifications_off)
-                            ],
-                          )),
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Notifications",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.normal)),
+                                Row(children: [
+                                  Text(notifications == true ? "On" : "Off"),
+                                  Icon(notifications == true
+                                      ? Icons.notifications
+                                      : Icons.notifications_off)
+                                ]),
+                              ])),
                       Divider()
                     ]),
               ),

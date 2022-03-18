@@ -28,7 +28,8 @@ class _HomepageScreenState extends State<Homepage> {
     super.didChangeDependencies();
     loading_ = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      var uid = await Provider.of<CurrentUser>(context, listen: false).getCurrentUser();
+      var uid = await Provider.of<CurrentUser>(context, listen: false)
+          .getCurrentUser();
       setState(() {
         myUid = uid;
         loading_ = false;
@@ -70,7 +71,6 @@ class _HomepageScreenState extends State<Homepage> {
     setState(() {});
   }
 
-
   createChatRoom(String chatRoomId, Map chatRoomInfoMap) async {
     final snapShot = await FirebaseFirestore.instance
         .collection("chatrooms")
@@ -89,7 +89,8 @@ class _HomepageScreenState extends State<Homepage> {
     }
   }
 
-  Widget searchListUserTile({String myUid, String myName, String uid, name, profileUrl}) {
+  Widget searchListUserTile(
+      {String myUid, String myName, String uid, name, profileUrl}) {
     return GestureDetector(
       onTap: () {
         var chatRoomId = getChatRoomIdByUids(myUid, uid);
@@ -129,105 +130,91 @@ class _HomepageScreenState extends State<Homepage> {
       stream: usersStream,
       builder: (context, snapshot) {
         return snapshot.hasData
-            ?  (snapshot.data.docs.length != 0 ?
-             ListView.builder(
-          itemCount: snapshot.data.docs.length,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            DocumentSnapshot ds = snapshot.data.docs[index];
-            return searchListUserTile(
-              myUid: myUid,
-              myName: myName,
-              uid: ds["uid"],
-              name: ds["displayName"],
-              profileUrl: ds["profile"],
-
-            );
-          },
-        )
+            ? (snapshot.data.docs.length != 0
+                ? ListView.builder(
+                    itemCount: snapshot.data.docs.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot ds = snapshot.data.docs[index];
+                      return searchListUserTile(
+                        myUid: myUid,
+                        myName: myName,
+                        uid: ds["uid"],
+                        name: ds["displayName"],
+                        profileUrl: ds["profile"],
+                      );
+                    },
+                  )
+                : Center(
+                    child: Text(
+                      'No results',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w700,
+                        color: Colors.green[900],
+                        /* letterSpacing: 0.0, */
+                      ),
+                    ),
+                  ))
             : Center(
                 child: Text(
                   'No results',
                   style: TextStyle(
-                    fontSize: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.05,
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.w700,
                     color: Colors.green[900],
                     /* letterSpacing: 0.0, */
                   ),
                 ),
-        )
-        ): Center(
-          child: Text(
-            'No results',
-            style: TextStyle(
-              fontSize: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.05,
-              fontFamily: 'Nunito',
-              fontWeight: FontWeight.w700,
-              color: Colors.green[900],
-              /* letterSpacing: 0.0, */
-            ),
-          ),
-        );
+              );
       },
     );
   }
 
   Widget chatRoomsList({String myUid, String myName}) {
     return StreamBuilder(
-      stream: chatRoomsStream,
-      builder: (context, snapshot) {
-        print("Snap has data?");
-        print(snapshot.hasData);
-        if(snapshot.data!=null){
-          print(snapshot.data.docs.length);
-        }
-        return snapshot.hasData
-            ?  (snapshot.data.docs.length != 0 ? ListView.builder(
-            itemCount: snapshot.data.docs.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              DocumentSnapshot ds = snapshot.data.docs[index];
-              return ChatRoomListTile(ds["lastMessage"], ds.id, myUid);
-            }): Center(
+        stream: chatRoomsStream,
+        builder: (context, snapshot) {
+          print("Snap has data?");
+          print(snapshot.hasData);
+          if (snapshot.data != null) {
+            print(snapshot.data.docs.length);
+          }
+          return snapshot.hasData
+              ? (snapshot.data.docs.length != 0
+                  ? ListView.builder(
+                      itemCount: snapshot.data.docs.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot ds = snapshot.data.docs[index];
+                        return ChatRoomListTile(
+                            ds["lastMessage"], ds.id, myUid);
+                      })
+                  : Center(
+                      child: Text(
+                      'You have no messages',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w700,
+                        color: Colors.green[900],
+                        /* letterSpacing: 0.0, */
+                      ),
+                    )))
+              : Center(
                   child: Text(
-                    'You have no messages',
-                    style: TextStyle(
-                      fontSize: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.05,
-                      fontFamily: 'Nunito',
-                      fontWeight: FontWeight.w700,
-                      color: Colors.green[900],
-                      /* letterSpacing: 0.0, */
-                    ),
-                  )
-              )
-            ) : Center(
-              child: Text(
-                'You have no messages yet!',
-                style: TextStyle(
-                  fontSize: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.05,
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.w700,
-                  color: Colors.green[900],
-                  /* letterSpacing: 0.0, */
-                ),
-              )
-            );
-
-      }
-    );
+                  'You have no messages yet!',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w700,
+                    color: Colors.green[900],
+                    /* letterSpacing: 0.0, */
+                  ),
+                ));
+        });
   }
 
   @override
@@ -236,133 +223,157 @@ class _HomepageScreenState extends State<Homepage> {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child:ModalProgressHUD(
+        child: ModalProgressHUD(
           inAsyncCall: loading_,
           child: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
               leading: TransformHelper.rotate(
-                          a: 1.00,
-                          b: 0.00,
-                          c: -0.00,
-                          d: 1.00,
-                          child: Container(
-                            child: Image.asset(
-                              "assets/images/logo.png",
-                              width: 50.0,
-                              height: 50.0,
-                            ),
-                          ),
+                a: 1.00,
+                b: 0.00,
+                c: -0.00,
+                d: 1.00,
+                child: Container(
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    width: 50.0,
+                    height: 50.0,
+                  ),
+                ),
               ),
               centerTitle: true,
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.exit_to_app, color: Colors.black,),
+                  icon: Icon(
+                    Icons.exit_to_app,
+                    color: Colors.black,
+                  ),
                   onPressed: () async {
                     await FirebaseAuth.instance.signOut().then((value) {
                       Navigator.of(context).popUntil((route) => route.isFirst);
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) {
-                            return Login();
-                          }));
+                        return Login();
+                      }));
                     });
                   },
                 ),
                 // overflow menu
-
               ],
             ),
-
             body: SafeArea(
-                child: Consumer<CurrentUser>(
-                  builder: (context, userData, child) {
-                    var myUid = userData.uid;
-                    var myName = userData.displayName;
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
+              child: Consumer<CurrentUser>(
+                builder: (context, userData, child) {
+                  var myUid = userData.uid;
+                  var myName = userData.displayName;
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            SizedBox(
+                              width: 20,
+                            ),
+                            CircleAvatar(
+                              radius: 24,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: userData.photoUrl != null
+                                      ? IconButton(
+                                          padding: EdgeInsets.all(0),
+                                          icon: FadeInImage(
+                                            image:
+                                                NetworkImage(userData.photoUrl),
+                                            placeholder: AssetImage(
+                                                'assets/images/placeholder.png'),
+                                          ),
+                                          onPressed: () => Navigator.of(context)
+                                              .pushNamedAndRemoveUntil(
+                                                  '/Profile',
+                                                  (Route<dynamic> route) =>
+                                                      false),
+                                        )
+                                      : IconButton(
+                                          padding: EdgeInsets.all(0),
+                                          focusColor: Colors.white,
+                                          icon: Image.asset(
+                                              'assets/images/placeholder.png'),
+                                          onPressed: () => Navigator.of(context)
+                                              .pushNamedAndRemoveUntil(
+                                                  '/Profile',
+                                                  (Route<dynamic> route) =>
+                                                      false))),
+                            ),
+                            SizedBox(
+                              width: 40,
+                            ),
+                            Text(
+                              'Contacts',
+                              style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Helvetica Neue',
+                                letterSpacing: 0.2,
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 45.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.grey.shade200,
+                          ),
+                          child: Row(
                             children: <Widget>[
                               SizedBox(
-                                width: 20,
+                                width: 10.0,
                               ),
-                              CircleAvatar(
-                                  radius: 24,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: userData.photoUrl!=null?FadeInImage(
-                                      image: NetworkImage(userData.photoUrl),
-                                      placeholder: AssetImage('assets/images/placeholder.png'),
-                                    ):Image.asset('assets/images/placeholder.png'),
-                                  ),
-                                ),
+                              Icon(Icons.search),
                               SizedBox(
-                                width: 40,
+                                width: 8.0,
                               ),
-                              Text(
-                              'Contacts',
-                                style: TextStyle(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Helvetica Neue',
-                                  letterSpacing: 0.2,
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            height: 45.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color: Colors.grey.shade200,
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                SizedBox(width: 10.0,),
-                                Icon(Icons.search),
-                                SizedBox(width: 8.0,),
-                                Expanded(
-                                  child: TextField(
-                                      focusNode: searchFocus,
-                                      decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: 'Search'
-                                    ),
+                              Expanded(
+                                child: TextField(
+                                    focusNode: searchFocus,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: 'Search'),
                                     onSubmitted: (_) {
-                                      if (searchUsernameEditingController.text != "") {
+                                      if (searchUsernameEditingController
+                                              .text !=
+                                          "") {
                                         onSearchBtnClick();
                                       }
                                     },
                                     controller: searchUsernameEditingController,
-
                                     style: TextStyle(
                                       color: Colors.green[900],
-                                    )
-                                  ),
-                                )
-                              ],
-                            ),
+                                    )),
+                              )
+                            ],
                           ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          isSearching ? searchUsersList(myUid:myUid, myName:myName) : chatRoomsList(),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        isSearching
+                            ? searchUsersList(myUid: myUid, myName: myName)
+                            : chatRoomsList(),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
-        )
-    );
-
+          ),
+        ));
   }
 }

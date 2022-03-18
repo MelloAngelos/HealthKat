@@ -41,7 +41,7 @@ class HealthKatApp extends StatelessWidget {
               '/Homepage': (context) => Homepage(),
               '/Admin': (context) => Admin(),
               '/Discover': (context) => Discover(),
-              '/Profile:': (context) => Profile(),
+              '/Profile': (context) => Profile(),
               '/Home': (context) => Home(),
             }));
   }
