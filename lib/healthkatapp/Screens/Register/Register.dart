@@ -59,7 +59,6 @@ class _RegisterState extends State<Register> {
       _loading = true;
     });
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    print(image);
     if (image != null) {
       croppedImage = await ImageCropper().cropImage(
         sourcePath: image.path,

@@ -30,6 +30,7 @@ class CurrentUser extends ChangeNotifier {
         displayName = loggedInUser.displayName;
         await getInfo();
       }
+      return uid;
     } catch (e) {
       print("Error while getting current user!");
       print(e);

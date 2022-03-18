@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/helpers/transform/transform.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
@@ -29,11 +28,18 @@ class _HomepageScreenState extends State<Homepage> {
     super.didChangeDependencies();
     loading_ = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Provider.of<CurrentUser>(context, listen: false).getCurrentUser();
+      var uid = await Provider.of<CurrentUser>(context, listen: false).getCurrentUser();
       setState(() {
+        myUid = uid;
         loading_ = false;
       });
     });
+  }
+
+  @override
+  void initState() {
+    getChatRooms(myUid);
+    super.initState();
   }
 
   getChatRooms(String myUid) async {
@@ -42,6 +48,7 @@ class _HomepageScreenState extends State<Homepage> {
         .orderBy("lastMessageSendTs", descending: true)
         .where("users", arrayContains: myUid)
         .snapshots();
+
     setState(() {});
   }
 
@@ -187,13 +194,7 @@ class _HomepageScreenState extends State<Homepage> {
             shrinkWrap: true,
             itemBuilder: (context, index) {
               DocumentSnapshot ds = snapshot.data.docs[index];
-              var otherUid = ds.id.replaceAll(myUid, "").replaceAll("_", "");
-              print(ds.id);
-              print(otherUid);
-              print(myUid);
-              print(ds);
-              print(ds["lastMessage"]);
-              return Text('ALL GOOD');
+              return ChatRoomListTile(ds["lastMessage"], ds.id, myUid);
             }): Center(
                   child: Text(
                     'You have no messages',
