@@ -6,8 +6,8 @@ import 'package:random_string/random_string.dart';
 import '../../current_user.dart';
 
 class Chat extends StatefulWidget {
-  final String chatWithUid, name;
-  Chat(this.chatWithUid, this.name);
+  final String chatWithUid, name, profilePic;
+  Chat(this.chatWithUid, this.name, this.profilePic);
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -102,12 +102,12 @@ class _ChatScreenState extends State<Chat> {
                   bottomLeft:
                   sendByMe ? Radius.circular(24) : Radius.circular(0),
                 ),
-                color: sendByMe ? Colors.blue : Color(0xfff1f0f0),
+                color: sendByMe ? Colors.green[500] : Colors.grey[200],
               ),
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(20),
               child: Text(
                 message,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: sendByMe ? Colors.white : Colors.black),
               )),
         ),
       ],
@@ -182,7 +182,24 @@ class _ChatScreenState extends State<Chat> {
         },
       child:Scaffold(
         appBar: AppBar(
-          title: Text(widget.name),
+          title: Container (
+            child: Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: widget.profilePic != "" ? FadeInImage(
+                    image: NetworkImage(widget.profilePic),
+                    placeholder: AssetImage('assets/images/placeholder.png'),
+                  ):Image.asset('assets/images/placeholder.png'),
+                ),
+              ),
+              SizedBox(width: 10),
+              Text(widget.name)
+            ],
+          ),
+          ),
         ),
         body: SafeArea(
           child: Consumer<CurrentUser>(
@@ -197,57 +214,63 @@ class _ChatScreenState extends State<Chat> {
                 child: Stack(
                   children: [
                     chatMessages(myUid),
-                    Container(
-                      height: 45.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.grey.shade200,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          SizedBox(width: 10.0,),
-                          Icon(Icons.search),
-                          SizedBox(width: 8.0,),
-                          Expanded(
-                            child: TextField(
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: 'Type new message'
+                    Positioned.fill(
+                      child:Align(
+                        alignment: Alignment.bottomCenter,
+                        child:Container(
+                          height: 45.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.grey.shade200,
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              SizedBox(width: 10.0,),
+                              Icon(Icons.dehaze_rounded),
+                              SizedBox(width: 8.0,),
+                              Expanded(
+                                child: TextField(
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: 'Type new message'
+                                    ),
+                                        onSubmitted: (value) {
+                                          addMessage(
+                                          myUid: myUid,
+                                          myProfilePic: myProfilePic,
+                                          chatRoomId: chatRoomId,
+                                          sendClicked: true);
+                                        },
+                                          controller: messageTextEdittingController,
+
+                                    style: TextStyle(
+                                      color: Colors.green[900],
+                                    )
                                 ),
-                                    onSubmitted: (value) {
-                                      addMessage(
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  addMessage(
                                       myUid: myUid,
                                       myProfilePic: myProfilePic,
                                       chatRoomId: chatRoomId,
-                                      sendClicked: true);
-                                    },
-                                      controller: messageTextEdittingController,
+                                      sendClicked: true
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(width: 10),
 
-                                style: TextStyle(
-                                  color: Colors.green[900],
-                                )
-                            ),
+                            ],
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              addMessage(
-                                  myUid: myUid,
-                                  myProfilePic: myProfilePic,
-                                  chatRoomId: chatRoomId,
-                                  sendClicked: true
-                              );
-                            },
-                            child: Icon(
-                              Icons.send,
-                              color: Colors.white,
-                            ),
-                          )
-                        ],
+                        ),
                       ),
                     ),
-                  ],
+                  ]),
                 ),
-              ),
             );
           })
         )

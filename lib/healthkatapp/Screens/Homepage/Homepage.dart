@@ -100,7 +100,7 @@ class _HomepageScreenState extends State<Homepage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Chat(uid, name)));
+                builder: (context) => Chat(uid, name, profileUrl)));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8),
@@ -239,6 +239,7 @@ class _HomepageScreenState extends State<Homepage> {
         child:ModalProgressHUD(
           inAsyncCall: loading_,
           child: Scaffold(
+            backgroundColor: Colors.white,
             appBar: AppBar(
               leading: TransformHelper.rotate(
                           a: 1.00,
