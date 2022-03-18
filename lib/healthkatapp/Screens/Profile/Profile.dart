@@ -38,9 +38,7 @@ class _ProfileState extends State<Profile> {
               appBar: AppBar(
                 leading: IconButton(
                     icon: Icon(Icons.arrow_back, color: Colors.black),
-                    onPressed: () => Navigator.of(context)
-                        .pushNamedAndRemoveUntil(
-                            '/Homepage', (Route<dynamic> route) => false)),
+                    onPressed: () => Navigator.pop(context)),
                 backgroundColor: Colors.transparent,
                 elevation: 0,
               ),

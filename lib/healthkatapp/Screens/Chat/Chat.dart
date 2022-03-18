@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:random_string/random_string.dart';
 
 import '../../current_user.dart';
+import '../Profile/Profile.dart';
 
 class Chat extends StatefulWidget {
   final String chatWithUid, name, profilePic;
@@ -196,7 +197,17 @@ class _ChatScreenState extends State<Chat> {
                 ),
               ),
               SizedBox(width: 10),
-              Text(widget.name)
+              Text(widget.name),
+              Spacer(), // I just added one line
+              IconButton(
+                  icon: Icon(Icons.info_outline_rounded),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Profile()));
+                  }
+              ),
             ],
           ),
           ),
