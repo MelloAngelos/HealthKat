@@ -52,14 +52,14 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              FontAwesomeIcons.userFriends,
+              FontAwesomeIcons.bookMedical,
               size: 24.0,
             ),
             label:'',
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              FontAwesomeIcons.solidCompass,
+              FontAwesomeIcons.solidUserCircle,
               size: 24.0,
             ),
             label:'',
