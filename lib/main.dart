@@ -6,6 +6,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:provider/provider.dart';
 import './healthkatapp/current_user.dart';
 import 'healthkatapp/Screens/Discover/Discover.dart';
+import 'healthkatapp/Screens/Home.dart';
 import 'healthkatapp/Screens/Homepage/Homepage.dart';
 import 'healthkatapp/Screens/Login/Login.dart';
 import 'healthkatapp/Screens/Register/Register.dart';
@@ -40,7 +41,8 @@ class HealthKatApp extends StatelessWidget {
               '/Homepage': (context) => Homepage(),
               '/Admin': (context) => Admin(),
               '/Discover': (context) => Discover(),
-              '/Profile:': (context) => Profile()
+              '/Profile:': (context) => Profile(),
+              '/Home': (context) => Home(),
             }));
   }
 }

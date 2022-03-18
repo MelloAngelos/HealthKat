@@ -21,20 +21,22 @@ dependencies:
   image_cropper: ^1.5.0
   bot_toast: ^4.0.1
   time_range_picker: ^2.1.0
+  font_awesome_flutter: ^9.2.0
+  random_string: ^2.3.1
 
-dev_dependencies: 
-  flutter_test: 
+dev_dependencies:
+  flutter_test:
     sdk: "flutter"
-environment: 
+environment:
   sdk: ">=2.7.0 <3.0.0"
-flutter: 
-  assets: 
+flutter:
+  assets:
     - "assets/images/"
-  fonts: 
-    - 
+  fonts:
+    -
       family: "Mulish"
-      fonts: 
-        - 
+      fonts:
+        -
           asset: "fonts/Mulish-700.ttf"
           style: "normal"
           weight: 700
@@ -52,46 +54,46 @@ flutter:
           weight: 700
     -
       family: "Roboto"
-      fonts: 
-        - 
+      fonts:
+        -
           asset: "fonts/Roboto-regular.ttf"
           style: "normal"
           weight: 400
-        - 
+        -
           asset: "fonts/Roboto-500.ttf"
           style: "normal"
           weight: 500
-        - 
+        -
           asset: "fonts/Roboto-300.ttf"
           style: "normal"
           weight: 300
-        - 
+        -
           asset: "fonts/Roboto-700.ttf"
           style: "normal"
           weight: 700
-    - 
+    -
       family: "Inter"
-      fonts: 
-        - 
+      fonts:
+        -
           asset: "fonts/Inter-regular.ttf"
           style: "normal"
           weight: 400
-        - 
+        -
           asset: "fonts/Inter-700.ttf"
           style: "normal"
           weight: 700
-        - 
+        -
           asset: "fonts/Inter-500.ttf"
           style: "normal"
           weight: 500
-    - 
+    -
       family: "Nunito"
-      fonts: 
-        - 
+      fonts:
+        -
           asset: "fonts/Nunito-700.ttf"
           style: "normal"
           weight: 700
-        - 
+        -
           asset: "fonts/Nunito-regular.ttf"
           style: "normal"
           weight: 400

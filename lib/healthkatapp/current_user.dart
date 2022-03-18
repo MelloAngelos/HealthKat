@@ -17,6 +17,7 @@ class CurrentUser extends ChangeNotifier {
   String address;
   bool isDoctor;
   String speciality;
+  String uid;
 
   List<User_profile> requests = [];
 
@@ -49,6 +50,8 @@ class CurrentUser extends ChangeNotifier {
       phoneNumber = document.data()['phone'];
       address = document.data()['address'];
       speciality = document.data()['speciality'];
+      uid = document.data()['uid'];
+
       notifyListeners();
     });
   }

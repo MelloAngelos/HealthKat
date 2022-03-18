@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import '../../../helpers/transform/transform.dart';
-import '../Admin/Admin.dart';
-import '../Homepage/Homepage.dart';
 import '../Verification.dart';
 import '../../current_user.dart';
-import '../Register/Register.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -99,7 +96,7 @@ class _State extends State<Login> {
                 .pushNamedAndRemoveUntil('/Admin', (Route<dynamic> route) => false);
           } else {
             Navigator.of(context)
-                .pushNamedAndRemoveUntil('/Homepage', (Route<dynamic> route) => false);
+                .pushNamedAndRemoveUntil('/Home', (Route<dynamic> route) => false);
           }
         }
       }
