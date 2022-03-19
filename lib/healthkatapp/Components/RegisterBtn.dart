@@ -6,7 +6,7 @@ class RegisterBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () =>
-          Navigator.pushNamed(context, '/Homepage'),
+          Navigator.pushNamed(context, '/Home'),
       child: Container(
         width: 134.39999389648438,
         height: 59.113311767578125,

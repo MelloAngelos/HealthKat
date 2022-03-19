@@ -9,9 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
-import '../../../helpers/transform/transform.dart';
 import '../../current_user.dart';
-import '../Homepage/Homepage.dart';
 import '../Verification.dart';
 
 
@@ -190,7 +188,7 @@ class _RegisterState extends State<Register> {
             }));
           } else {
             Navigator.of(context)
-                .pushNamedAndRemoveUntil('/Homepage', (Route<dynamic> route) => false);
+                .pushNamedAndRemoveUntil('/Home', (Route<dynamic> route) => false);
             }
           }
 

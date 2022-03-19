@@ -5,7 +5,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import '../current_user.dart';
 
-import 'Homepage/Homepage.dart';
+import 'Home.dart';
 import 'Login/Login.dart';
 
 class VerificationScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (widget.isVerified == true) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-          return Homepage();
+          return Home();
         }));
       }
     });
@@ -72,7 +72,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     });
                     if (widget.isVerified) {
                       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-                        return Homepage();
+                        return Home();
                       }));
                     }
                     setState(() {

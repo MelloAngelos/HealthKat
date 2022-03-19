@@ -47,8 +47,9 @@ class _HomepageScreenState extends State<Homepage> {
   getChatRooms(String myUid) async {
     chatRoomsStream = await FirebaseFirestore.instance
         .collection("chatrooms")
-        .orderBy("lastMessageSendTs", descending: true)
         .where("users", arrayContains: myUid)
+        .where("lastMessage", isNotEqualTo: "")
+        .orderBy("lastMessageSendTs", descending: true)
         .snapshots();
 
     setState(() {});
@@ -183,6 +184,7 @@ class _HomepageScreenState extends State<Homepage> {
     return StreamBuilder(
         stream: chatRoomsStream,
         builder: (context, snapshot) {
+
           print("Snap has data?");
           print(snapshot.hasData);
           if (snapshot.data != null) {
@@ -370,7 +372,7 @@ class _HomepageScreenState extends State<Homepage> {
                         ),
                         isSearching
                             ? searchUsersList(myUid: myUid, myName: myName)
-                            : chatRoomsList(),
+                            : chatRoomsList(myUid: myUid, myName: myName),
                       ],
                     ),
                   );
