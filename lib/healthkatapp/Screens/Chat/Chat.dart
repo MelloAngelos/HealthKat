@@ -26,8 +26,10 @@ class _ChatScreenState extends State<Chat> {
     super.didChangeDependencies();
     loading_ = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Provider.of<CurrentUser>(context, listen: false).getCurrentUser();
+      var uid = await Provider.of<CurrentUser>(context, listen: false)
+          .getCurrentUser();
       setState(() {
+        myUid = uid;
         loading_ = false;
       });
     });
@@ -76,10 +78,16 @@ class _ChatScreenState extends State<Chat> {
           "lastMessageSendBy": myUid
         };
 
-        FirebaseFirestore.instance
-            .collection("chatrooms")
-            .doc(chatRoomId)
-            .update(lastMessageInfoMap);
+        DocumentReference docRef = FirebaseFirestore.instance
+                                  .collection("chatrooms")
+                                  .doc(chatRoomId);
+        
+        if(docRef.snapshots().contains("lastMessage") == true) {
+          print("Already exists");
+          docRef.update(lastMessageInfoMap);
+        } else {
+          docRef.set(lastMessageInfoMap);
+        };
 
         if (sendClicked) {
           // remove the text in the message input field

@@ -34,21 +34,15 @@ class _HomepageScreenState extends State<Homepage> {
       setState(() {
         myUid = uid;
         loading_ = false;
+        getChatRooms(myUid);
       });
     });
-  }
-
-  @override
-  void initState() {
-    getChatRooms(myUid);
-    super.initState();
   }
 
   getChatRooms(String myUid) async {
     chatRoomsStream = await FirebaseFirestore.instance
         .collection("chatrooms")
         .where("users", arrayContains: myUid)
-        .where("lastMessage", isNotEqualTo: "")
         .orderBy("lastMessageSendTs", descending: true)
         .snapshots();
 
@@ -98,10 +92,8 @@ class _HomepageScreenState extends State<Homepage> {
         var chatRoomId = getChatRoomIdByUids(myUid, uid);
         Map<String, dynamic> chatRoomInfoMap = {
           "users": [myUid, uid],
-          "lastMessage": "",
-          "lastMessageSendTs": "",
-          "lastMessageSendBy": ""
         };
+        print(chatRoomId);
         createChatRoom(chatRoomId, chatRoomInfoMap);
         Navigator.push(
             context,
@@ -184,7 +176,7 @@ class _HomepageScreenState extends State<Homepage> {
     return StreamBuilder(
         stream: chatRoomsStream,
         builder: (context, snapshot) {
-
+          print(myUid);
           print("Snap has data?");
           print(snapshot.hasData);
           if (snapshot.data != null) {
@@ -291,7 +283,7 @@ class _HomepageScreenState extends State<Homepage> {
                                 radius: 24,
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(50),
-                                    child: userData.photoUrl != null
+                                    child: photo != null
                                         ? IconButton(
                                             padding: EdgeInsets.all(0),
                                             icon: FadeInImage(
@@ -353,10 +345,10 @@ class _HomepageScreenState extends State<Homepage> {
                                         border: InputBorder.none,
                                         hintText: 'Search'),
                                     onSubmitted: (_) {
-                                      if (searchUsernameEditingController
-                                              .text !=
-                                          "") {
+                                      if (searchUsernameEditingController.text != "") {
                                         onSearchBtnClick();
+                                      } else {
+                                        isSearching = false;
                                       }
                                     },
                                     controller: searchUsernameEditingController,
