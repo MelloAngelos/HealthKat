@@ -42,6 +42,7 @@ class _HomepageScreenState extends State<Homepage> {
     chatRoomsStream = await FirebaseFirestore.instance
         .collection("chatrooms")
         .where("users", arrayContains: myUid)
+        .where("lastMessageSendTs", isNotEqualTo: "")
         .orderBy("lastMessageSendTs", descending: true)
         .snapshots();
 
