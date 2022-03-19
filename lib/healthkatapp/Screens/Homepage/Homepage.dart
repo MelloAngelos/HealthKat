@@ -263,12 +263,22 @@ class _HomepageScreenState extends State<Homepage> {
                           height: 30,
                         ),
                         chatRoomsList(myUid: myUid, myName: myName),
+
                       ],
                     ),
                   );
                 },
               ),
             ),
+            floatingActionButton: FloatingActionButton.extended(
+              onPressed: () => Navigator.push( context, MaterialPageRoute(
+                    builder: (context) => Discover())),
+              label: const Text('Send Message'),
+              icon: const Icon(Icons.add),
+              backgroundColor: Colors.green[700],
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
           ),
         ));
   }
