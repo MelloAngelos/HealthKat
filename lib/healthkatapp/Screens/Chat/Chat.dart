@@ -78,16 +78,11 @@ class _ChatScreenState extends State<Chat> {
           "lastMessageSendBy": myUid
         };
 
-        DocumentReference docRef = FirebaseFirestore.instance
-                                  .collection("chatrooms")
-                                  .doc(chatRoomId);
-        
-        if(docRef.snapshots().contains("lastMessage") == true) {
-          print("Already exists");
-          docRef.update(lastMessageInfoMap);
-        } else {
-          docRef.set(lastMessageInfoMap);
-        };
+        FirebaseFirestore.instance
+                        .collection("chatrooms")
+                        .doc(chatRoomId)
+                        .update(lastMessageInfoMap);
+
 
         if (sendClicked) {
           // remove the text in the message input field

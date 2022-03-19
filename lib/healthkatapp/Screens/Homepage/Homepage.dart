@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../chatroomListTile.dart';
 import '../../current_user.dart';
 import '../Chat/Chat.dart';
+import '../Discover/Discover.dart';
 import '../Login/Login.dart';
 import '../Profile/Profile.dart';
 
@@ -18,11 +19,9 @@ class Homepage extends StatefulWidget {
 
 class _HomepageScreenState extends State<Homepage> {
   bool loading_ = false;
-  bool isSearching = false;
   String myUid, myName;
-  Stream usersStream, chatRoomsStream;
-  final FocusNode searchFocus = FocusNode();
-  var searchUsernameEditingController = TextEditingController();
+  Stream chatRoomsStream;
+
 
   @override
   void didChangeDependencies() {
@@ -57,16 +56,6 @@ class _HomepageScreenState extends State<Homepage> {
     }
   }
 
-  onSearchBtnClick() async {
-    isSearching = true;
-    setState(() {});
-    usersStream = await FirebaseFirestore.instance
-        .collection("users")
-        .where("displayName", isEqualTo: searchUsernameEditingController.text)
-        .snapshots();
-    setState(() {});
-  }
-
   createChatRoom(String chatRoomId, Map chatRoomInfoMap) async {
     final snapShot = await FirebaseFirestore.instance
         .collection("chatrooms")
@@ -85,112 +74,25 @@ class _HomepageScreenState extends State<Homepage> {
     }
   }
 
-  Widget searchListUserTile(
-      {String myUid, String myName, String uid, name, profileUrl}) {
-    return GestureDetector(
-      onTap: () {
-        var chatRoomId = getChatRoomIdByUids(myUid, uid);
-        Map<String, dynamic> chatRoomInfoMap = {
-          "users": [myUid, uid],
-        };
-        print(chatRoomId);
-        createChatRoom(chatRoomId, chatRoomInfoMap);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Chat(uid, name, profileUrl)));
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(50),
-              child: Image.network(
-                profileUrl,
-                height: 40,
-                width: 40,
-              ),
-            ),
-            SizedBox(width: 12),
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(name)])
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget searchUsersList({String myUid, String myName}) {
-    return StreamBuilder(
-      stream: usersStream,
-      builder: (context, snapshot) {
-        return snapshot.hasData
-            ? (snapshot.data.docs.length != 0
-                ? ListView.builder(
-                    itemCount: snapshot.data.docs.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      DocumentSnapshot ds = snapshot.data.docs[index];
-                      print("hey");
-                      print(ds);
-                      return searchListUserTile(
-                        myUid: myUid,
-                        myName: myName,
-                        uid: ds["uid"],
-                        name: ds["displayName"],
-                        profileUrl: ds["profile"],
-                      );
-                    },
-                  )
-                : Center(
-                    child: Text(
-                      'No results',
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w700,
-                        color: Colors.green[900],
-                        /* letterSpacing: 0.0, */
-                      ),
-                    ),
-                  ))
-            : Center(
-                child: Text(
-                  'No results',
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width * 0.05,
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.w700,
-                    color: Colors.green[900],
-                    /* letterSpacing: 0.0, */
-                  ),
-                ),
-              );
-      },
-    );
-  }
-
   Widget chatRoomsList({String myUid, String myName}) {
     return StreamBuilder(
         stream: chatRoomsStream,
-        builder: (context, snapshot) {
+        builder: (context, snapshotChat) {
           print(myUid);
           print("Snap has data?");
-          print(snapshot.hasData);
-          if (snapshot.data != null) {
-            print(snapshot.data.docs.length);
-          }
-          return snapshot.hasData
-              ? (snapshot.data.docs.length != 0
+          print(snapshotChat.hasData);
+
+          return snapshotChat.hasData
+              ? (snapshotChat.data.docs.length != 0
                   ? ListView.builder(
-                      itemCount: snapshot.data.docs.length,
+                      itemCount: snapshotChat.data.docs.length,
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        DocumentSnapshot ds = snapshot.data.docs[index];
-                        return ChatRoomListTile(
-                            ds["lastMessage"], ds.id, myUid);
+                        DocumentSnapshot ds = snapshotChat.data.docs[index];
+
+                          return ChatRoomListTile(
+                            ds["lastMessage"], ds.id, myUid
+                          );
                       })
                   : Center(
                       child: Text(
@@ -269,6 +171,7 @@ class _HomepageScreenState extends State<Homepage> {
                   var photo = userData.photoUrl;
                   var myUid = userData.uid;
                   var myName = userData.displayName;
+                  var isDoctor = userData.isDoctor;
                   return Padding(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     child: Column(
@@ -340,21 +243,17 @@ class _HomepageScreenState extends State<Homepage> {
                               ),
                               Expanded(
                                 child: TextField(
-                                    focusNode: searchFocus,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: 'Search'),
-                                    onSubmitted: (_) {
-                                      if (searchUsernameEditingController.text != "") {
-                                        onSearchBtnClick();
-                                      } else {
-                                        isSearching = false;
-                                      }
-                                    },
-                                    controller: searchUsernameEditingController,
+                                    onTap:() => Navigator.push( context, MaterialPageRoute(
+                                                              builder: (context) => Discover())
+                                    ),
                                     style: TextStyle(
                                       color: Colors.green[900],
-                                    )),
+                                    ),
+                                    readOnly: true,
+                                ),
                               )
                             ],
                           ),
@@ -362,9 +261,7 @@ class _HomepageScreenState extends State<Homepage> {
                         SizedBox(
                           height: 30,
                         ),
-                        isSearching
-                            ? searchUsersList(myUid: myUid, myName: myName)
-                            : chatRoomsList(myUid: myUid, myName: myName),
+                        chatRoomsList(myUid: myUid, myName: myName),
                       ],
                     ),
                   );
