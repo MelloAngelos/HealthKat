@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import '../../Components/SearchBar.dart';
 import '../../current_user.dart';
+import '../Login/Login.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -36,9 +38,17 @@ class _ProfileState extends State<Profile> {
             inAsyncCall: _loading,
             child: Scaffold(
               appBar: AppBar(
-                leading: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.black),
-                    onPressed: () => Navigator.pop(context)),
+                title: Text(
+                  'My Profile',
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Helvetica Neue',
+                    letterSpacing: 0.2,
+                    color:Colors.black,
+                    ),
+                ),
+                centerTitle: true,
                 backgroundColor: Colors.transparent,
                 elevation: 0,
               ),
@@ -134,7 +144,6 @@ class _ProfileState extends State<Profile> {
                       SizedBox(height: 200),
                       Text("More Actions",
                           style: TextStyle(color: Colors.grey)),
-                      SearchBar(),
                       Divider(),
                       Text("Privacy", style: TextStyle(color: Colors.grey)),
                       TextButton(
@@ -154,6 +163,7 @@ class _ProfileState extends State<Profile> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                SizedBox(width: 20),
                                 Text("Notifications",
                                     style: TextStyle(
                                         fontSize: 18,
@@ -165,7 +175,58 @@ class _ProfileState extends State<Profile> {
                                       : Icons.notifications_off)
                                 ]),
                               ])),
-                      Divider()
+                      Divider(),
+                      TextButton(
+                          style: TextButton.styleFrom(primary: Colors.black),
+                          onPressed: () async {
+                            await FirebaseAuth.instance.signOut().then((value) {
+                              Navigator.of(context).popUntil((route) => route.isFirst);
+                              Navigator.pushReplacement(context,
+                                  MaterialPageRoute(builder: (context) {
+                                    return Login();
+                                  }));
+                            });
+                          },
+                          child: Container(
+                            child:Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(width: 20),
+                                Text("Log out",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.normal)),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.exit_to_app,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () async {
+                                    await FirebaseAuth.instance.signOut().then((value) {
+                                      Navigator.of(context).popUntil((route) => route.isFirst);
+                                      Navigator.pushReplacement(context,
+                                          MaterialPageRoute(builder: (context) {
+                                            return Login();
+                                          }));
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.red[100],
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.15),
+                                  blurRadius: 8,
+                                  spreadRadius: 6,
+                                  offset: const Offset(0, 0),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ),
                     ]),
               ),
             )));

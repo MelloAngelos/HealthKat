@@ -338,7 +338,7 @@ class _DiscoverScreenState extends State<Discover> {
                                     height: 40,
                                     child: Center(
                                       child: Text(
-                                        'Doctor',
+                                        isDoctor ? 'Person' : 'Doctor',
                                       ),
                                     ),
                                     decoration: BoxDecoration(
