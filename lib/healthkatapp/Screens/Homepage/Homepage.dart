@@ -140,6 +140,8 @@ class _HomepageScreenState extends State<Homepage> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       DocumentSnapshot ds = snapshot.data.docs[index];
+                      print("hey");
+                      print(ds);
                       return searchListUserTile(
                         myUid: myUid,
                         myName: myName,
@@ -270,6 +272,7 @@ class _HomepageScreenState extends State<Homepage> {
             body: SafeArea(
               child: Consumer<CurrentUser>(
                 builder: (context, userData, child) {
+                  var photo = userData.photoUrl;
                   var myUid = userData.uid;
                   var myName = userData.displayName;
                   return Padding(
@@ -283,33 +286,32 @@ class _HomepageScreenState extends State<Homepage> {
                               width: 20,
                             ),
                             CircleAvatar(
-                              radius: 24,
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: userData.photoUrl != null
-                                      ? IconButton(
-                                          padding: EdgeInsets.all(0),
-                                          icon: FadeInImage(
-                                            image:
-                                                NetworkImage(userData.photoUrl),
-                                            placeholder: AssetImage(
+                                radius: 24,
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: userData.photoUrl != null
+                                        ? IconButton(
+                                            padding: EdgeInsets.all(0),
+                                            icon: FadeInImage(
+                                              image: NetworkImage(photo),
+                                              placeholder: AssetImage(
+                                                  'assets/images/placeholder.png'),
+                                            ),
+                                            onPressed: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Profile())))
+                                        : IconButton(
+                                            padding: EdgeInsets.all(0),
+                                            focusColor: Colors.white,
+                                            icon: Image.asset(
                                                 'assets/images/placeholder.png'),
-                                          ),
-                                          onPressed: () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => Profile()))
-                                        )
-                                      : IconButton(
-                                          padding: EdgeInsets.all(0),
-                                          focusColor: Colors.white,
-                                          icon: Image.asset(
-                                              'assets/images/placeholder.png'),
-                                          onPressed: () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => Profile()))))
-                            ),
+                                            onPressed: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Profile()))))),
                             SizedBox(
                               width: 40,
                             ),

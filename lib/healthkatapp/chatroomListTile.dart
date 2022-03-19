@@ -17,12 +17,13 @@ class _ChatRoomListTileState extends State<ChatRoomListTile> {
   getThisUserInfo() async {
     uid = widget.chatRoomId.split("_")[1];
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-                                  .collection("users")
-                                  .where("uid", isEqualTo: uid)
-                                  .get()
-                                  ;
+        .collection("users")
+        .where("uid", isEqualTo: uid)
+        .get();
     name = "${querySnapshot.docs[0]["displayName"]}";
     profilePicUrl = "${querySnapshot.docs[0]["profile"]}";
+    print("hey");
+    print(profilePicUrl);
     setState(() {});
   }
 
@@ -51,10 +52,13 @@ class _ChatRoomListTileState extends State<ChatRoomListTile> {
                 radius: 24,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(50),
-                  child: profilePicUrl != "" ? FadeInImage(
-                    image: NetworkImage(profilePicUrl),
-                    placeholder: AssetImage('assets/images/placeholder.png'),
-                  ):Image.asset('assets/images/placeholder.png'),
+                  child: profilePicUrl != "null" && profilePicUrl != ""
+                      ? FadeInImage(
+                          image: NetworkImage(profilePicUrl),
+                          placeholder:
+                              AssetImage('assets/images/placeholder.png'),
+                        )
+                      : Image.asset('assets/images/placeholder.png'),
                 ),
               ),
               SizedBox(width: 15),

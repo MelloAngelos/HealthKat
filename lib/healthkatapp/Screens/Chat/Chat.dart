@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:random_string/random_string.dart';
 
 import '../../current_user.dart';
+import '../OthersProfile/OthersProfile.dart';
 import '../Profile/Profile.dart';
 
 class Chat extends StatefulWidget {
@@ -40,7 +41,11 @@ class _ChatScreenState extends State<Chat> {
     }
   }
 
-  addMessage({String myUid, String myProfilePic, String chatRoomId, bool sendClicked}) {
+  addMessage(
+      {String myUid,
+      String myProfilePic,
+      String chatRoomId,
+      bool sendClicked}) {
     if (messageTextEdittingController.text != "") {
       String message = messageTextEdittingController.text;
 
@@ -89,7 +94,7 @@ class _ChatScreenState extends State<Chat> {
   Widget chatMessageTile(String message, bool sendByMe) {
     return Row(
       mainAxisAlignment:
-      sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+          sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         Flexible(
           child: Container(
@@ -98,10 +103,10 @@ class _ChatScreenState extends State<Chat> {
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(24),
                   bottomRight:
-                  sendByMe ? Radius.circular(0) : Radius.circular(24),
+                      sendByMe ? Radius.circular(0) : Radius.circular(24),
                   topRight: Radius.circular(24),
                   bottomLeft:
-                  sendByMe ? Radius.circular(24) : Radius.circular(0),
+                      sendByMe ? Radius.circular(24) : Radius.circular(0),
                 ),
                 color: sendByMe ? Colors.green[500] : Colors.grey[200],
               ),
@@ -120,39 +125,33 @@ class _ChatScreenState extends State<Chat> {
       stream: messageStream,
       builder: (context, snapshot) {
         return snapshot.hasData
-            ? (snapshot.data.docs.length != 0 ?
-              ListView.builder(
-                padding: EdgeInsets.only(bottom: 70, top: 16),
-                itemCount: snapshot.data.docs.length,
-                reverse: true,
-                itemBuilder: (context, index) {
-                  DocumentSnapshot ds = snapshot.data.docs[index];
-                  return chatMessageTile(
-                      ds["message"], myUid == ds["sendBy"]);
-                })
-              : Center(
-                  child: Text(
-                    'Send a message now!',
-                    style: TextStyle(
-                      fontSize: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.05,
-                      fontFamily: 'Nunito',
-                      fontWeight: FontWeight.w700,
-                      color: Colors.green[900],
-                      /* letterSpacing: 0.0, */
+            ? (snapshot.data.docs.length != 0
+                ? ListView.builder(
+                    padding: EdgeInsets.only(bottom: 70, top: 16),
+                    itemCount: snapshot.data.docs.length,
+                    reverse: true,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot ds = snapshot.data.docs[index];
+                      return chatMessageTile(
+                          ds["message"], myUid == ds["sendBy"]);
+                    })
+                : Center(
+                    child: Text(
+                      'Send a message now!',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w700,
+                        color: Colors.green[900],
+                        /* letterSpacing: 0.0, */
+                      ),
                     ),
-                  ),
-                )
-              ) : Center(
+                  ))
+            : Center(
                 child: Text(
                   'Send a message now!',
                   style: TextStyle(
-                    fontSize: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.05,
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.w700,
                     color: Colors.green[900],
@@ -166,14 +165,13 @@ class _ChatScreenState extends State<Chat> {
 
   getAndSetMessages(chatRoomId) async {
     messageStream = await FirebaseFirestore.instance
-                    .collection("chatrooms")
-                    .doc(chatRoomId)
-                    .collection("chats")
-                    .orderBy("ts", descending: true)
-                    .snapshots();
+        .collection("chatrooms")
+        .doc(chatRoomId)
+        .collection("chats")
+        .orderBy("ts", descending: true)
+        .snapshots();
     setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -181,54 +179,56 @@ class _ChatScreenState extends State<Chat> {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-      child:Scaffold(
-        appBar: AppBar(
-          title: Container (
-            child: Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: widget.profilePic != "" ? FadeInImage(
-                    image: NetworkImage(widget.profilePic),
-                    placeholder: AssetImage('assets/images/placeholder.png'),
-                  ):Image.asset('assets/images/placeholder.png'),
+        child: Scaffold(
+            appBar: AppBar(
+              title: Container(
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: widget.profilePic != "" &&
+                                widget.profilePic != "null"
+                            ? FadeInImage(
+                                image: NetworkImage(widget.profilePic),
+                                placeholder:
+                                    AssetImage('assets/images/placeholder.png'),
+                              )
+                            : Image.asset('assets/images/placeholder.png'),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Text(widget.name),
+                    Spacer(), // I just added one line
+                    IconButton(
+                        icon: Icon(Icons.info_outline_rounded),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      OthersProfile(widget.chatWithUid)));
+                        }),
+                  ],
                 ),
               ),
-              SizedBox(width: 10),
-              Text(widget.name),
-              Spacer(), // I just added one line
-              IconButton(
-                  icon: Icon(Icons.info_outline_rounded),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Profile()));
-                  }
-              ),
-            ],
-          ),
-          ),
-        ),
-        body: SafeArea(
-          child: Consumer<CurrentUser>(
-            builder: (context, userData, child) {
-            var myUid = userData.uid;
-            var myProfilePic = userData.photoUrl;
-            var chatRoomId = getChatRoomIdByUids(widget.chatWithUid, myUid);
-            getAndSetMessages(chatRoomId);
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child:Container(
-                child: Stack(
-                  children: [
+            ),
+            body: SafeArea(child:
+                Consumer<CurrentUser>(builder: (context, userData, child) {
+              var myUid = userData.uid;
+              var myProfilePic = userData.photoUrl;
+              var chatRoomId = getChatRoomIdByUids(widget.chatWithUid, myUid);
+              getAndSetMessages(chatRoomId);
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                child: Container(
+                  child: Stack(children: [
                     chatMessages(myUid),
                     Positioned.fill(
-                      child:Align(
+                      child: Align(
                         alignment: Alignment.bottomCenter,
-                        child:Container(
+                        child: Container(
                           height: 45.0,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16),
@@ -236,28 +236,29 @@ class _ChatScreenState extends State<Chat> {
                           ),
                           child: Row(
                             children: <Widget>[
-                              SizedBox(width: 10.0,),
+                              SizedBox(
+                                width: 10.0,
+                              ),
                               Icon(Icons.dehaze_rounded),
-                              SizedBox(width: 8.0,),
+                              SizedBox(
+                                width: 8.0,
+                              ),
                               Expanded(
                                 child: TextField(
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
-                                        hintText: 'Type new message'
-                                    ),
-                                        onSubmitted: (value) {
-                                          addMessage(
+                                        hintText: 'Type new message'),
+                                    onSubmitted: (value) {
+                                      addMessage(
                                           myUid: myUid,
                                           myProfilePic: myProfilePic,
                                           chatRoomId: chatRoomId,
                                           sendClicked: true);
-                                        },
-                                          controller: messageTextEdittingController,
-
+                                    },
+                                    controller: messageTextEdittingController,
                                     style: TextStyle(
                                       color: Colors.green[900],
-                                    )
-                                ),
+                                    )),
                               ),
                               GestureDetector(
                                 onTap: () {
@@ -265,8 +266,7 @@ class _ChatScreenState extends State<Chat> {
                                       myUid: myUid,
                                       myProfilePic: myProfilePic,
                                       chatRoomId: chatRoomId,
-                                      sendClicked: true
-                                  );
+                                      sendClicked: true);
                                 },
                                 child: Icon(
                                   Icons.send,
@@ -274,7 +274,6 @@ class _ChatScreenState extends State<Chat> {
                                 ),
                               ),
                               SizedBox(width: 10),
-
                             ],
                           ),
                         ),
@@ -282,10 +281,7 @@ class _ChatScreenState extends State<Chat> {
                     ),
                   ]),
                 ),
-            );
-          })
-        )
-      )
-    );
+              );
+            }))));
   }
 }
