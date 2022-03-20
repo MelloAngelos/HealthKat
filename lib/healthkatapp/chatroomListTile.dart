@@ -15,7 +15,10 @@ class _ChatRoomListTileState extends State<ChatRoomListTile> {
   String profilePicUrl = "", name = "", uid = "";
 
   getThisUserInfo() async {
-    uid = widget.chatRoomId.split("_")[1];
+    uid = widget.chatRoomId.split("_")[0];
+    if(uid == widget.myUid)
+      uid = widget.chatRoomId.split("_")[1];
+
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection("users")
         .where("uid", isEqualTo: uid)

@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:random_string/random_string.dart';
 import 'package:record_mp3/record_mp3.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../current_user.dart';
 import '../OthersProfile/OthersProfile.dart';
@@ -385,6 +386,41 @@ class _ChatScreenState extends State<Chat> {
 
   }
 
+  Future<void> _makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
+  }
+
+  showAlertDialog(BuildContext context, String name) {
+
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () { Navigator.pop(context); },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("No phone provided from $name"),
+      content: Text("Send a message to $name now!"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -394,7 +430,10 @@ class _ChatScreenState extends State<Chat> {
         child: Scaffold(
             appBar: AppBar(
               title: Container(
-                child: Row(
+                child: Consumer<CurrentUser>(builder: (context, userData, child) {
+                  var phone = userData.phoneNumber;
+                  var name = userData.displayName;
+                  return Row(
                   children: [
                     CircleAvatar(
                       radius: 20,
@@ -411,8 +450,25 @@ class _ChatScreenState extends State<Chat> {
                       ),
                     ),
                     SizedBox(width: 10),
-                    Text(widget.name),
-                    Spacer(), // I just added one line
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      child:
+                      Text(widget.name, maxLines:1, overflow:TextOverflow.fade)
+                    ),
+                    Spacer(),
+                    IconButton(icon: new Icon(Icons.phone),
+                        onPressed: () {
+                          setState(() {
+                            if(phone!= null) {
+                              var url = 'tel:+30' + phone;
+                              _makePhoneCall(url);
+                            } else {
+                              showAlertDialog(context, name);
+                            }
+                          });
+                        },
+                      ),
+                    SizedBox(width:10),
                     IconButton(
                         icon: Icon(Icons.info_outline_rounded),
                         onPressed: () {
@@ -422,7 +478,8 @@ class _ChatScreenState extends State<Chat> {
                                   builder: (context) =>
                                       OthersProfile(widget.chatWithUid)));
                         }),
-                  ],
+                  ]);
+                }
                 ),
               ),
             ),

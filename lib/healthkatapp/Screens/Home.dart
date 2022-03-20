@@ -5,7 +5,7 @@ import 'Homepage/Homepage.dart';
 import 'Discover/Discover.dart';
 
 class Home extends StatefulWidget {
-  Home({Key key}) : super(key: key);
+  Home({Key key, }) : super(key: key);
 
   _HomeState createState() => _HomeState();
 }

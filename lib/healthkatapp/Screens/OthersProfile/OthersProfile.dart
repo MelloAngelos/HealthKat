@@ -107,7 +107,7 @@ class _ProfileState extends State<OthersProfile> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 28,
-                            fontFamily: 'Nunito',
+                            fontFamily: 'Roboto',
                           ),
                         ),
                       )),

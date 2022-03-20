@@ -117,7 +117,7 @@ class _DiscoverScreenState extends State<Discover> {
   }
 
   Widget searchListUserTile(
-      {String myUid, String myName, String uid, name, profileUrl}) {
+      {String myUid, String myName, String uid, name, profileUrl, speciality}) {
     return GestureDetector(
       onTap: () {
         var chatRoomId = getChatRoomIdByUids(myUid, uid);
@@ -138,26 +138,30 @@ class _DiscoverScreenState extends State<Discover> {
         margin: EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(50),
-              child: profileUrl != null && profileUrl != ""
-                  ? Image.network(
-                profileUrl,
-                height: 40,
-                width: 40,
-              ) : Image.asset(
-                "assets/images/placeholder.png",
-                width: 50.0,
-                height: 50.0,
+            CircleAvatar(
+              radius: 20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(30),
+                child: (profileUrl!= "" &&
+                    profileUrl != "null")
+                    ? FadeInImage(
+                  image: NetworkImage(profileUrl),
+                  placeholder:
+                  AssetImage('assets/images/placeholder.png'),
+                )
+                    : Image.asset('assets/images/placeholder.png'),
               ),
             ),
             SizedBox(width: 12),
-            Column(
+            Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(name)])
+                children: [
+                  Text(name),Text(": "),
+                  speciality != "" ? Text(speciality) : Text("Patient")
+                ])
           ],
         ),
-      ),
+      )
     );
   }
 
@@ -191,13 +195,27 @@ class _DiscoverScreenState extends State<Discover> {
           shrinkWrap: true,
           itemBuilder: (context, index) {
             DocumentSnapshot ds = snapshot.data.docs[index];
-            return searchListUserTile(
+            return (snapshot.data.docs.length == 1 && ds["uid"] == myUid) ?
+              Center(
+                child: Text(
+                  'No person found except you!',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w700,
+                    color: Colors.green[900],
+                    /* letterSpacing: 0.0, */
+                  ),
+                ),
+              )
+             : (ds["uid"] != myUid ? searchListUserTile(
               myUid: myUid,
               myName: myName,
               uid: ds["uid"],
               name: ds["displayName"],
-              profileUrl: ds["profile"] != null ? ds["profile"] : "",
-            );
+              profileUrl: (ds["profile"] != null && ds["profile"] != "") ? ds["profile"] : "",
+              speciality: ds["speciality"],
+            ) : Container());
           },
           ) : Center(
               child: Text(
@@ -294,7 +312,7 @@ class _DiscoverScreenState extends State<Discover> {
                                         if (value != "" ) {
                                           isSearching = true;
                                           onSearchBtnClick(isDoctor);
-                                          placeholderText = 'Select Doctor or Speciality!';
+                                          placeholderText = isDoctor ? 'Select Person or Speciality!' : 'Select Doctor or Speciality!';
                                           isEmpty = false;
                                         } else{
                                           speciality = '';
@@ -326,7 +344,7 @@ class _DiscoverScreenState extends State<Discover> {
                                         c1 = inactiveC;
                                         selectedBoxWidth1 = 1;
                                         speciality = '';
-                                        placeholderText = 'Select Speciality or Doctor!';
+                                        placeholderText = isDoctor ? 'Select Person or Speciality!' : 'Select Doctor or Speciality!';
                                         usersStream = null;
                                       } else {
                                         c1 = activeC;
@@ -334,7 +352,7 @@ class _DiscoverScreenState extends State<Discover> {
                                         selectedBoxWidth1 = 5;
                                         selectedBoxWidth2 = 1;
                                         speciality = 'false';
-                                        placeholderText = 'No doctor found!';
+                                        placeholderText = isDoctor ? 'No person found!' : 'No doctor found!';
                                         onSearchBtnClick(isDoctor);
                                       }
                                     });
@@ -368,7 +386,7 @@ class _DiscoverScreenState extends State<Discover> {
                                         c2 = inactiveC;
                                         speciality = '';
                                         selectedBoxWidth2 = 1;
-                                        placeholderText = 'Select Speciality or Doctor!';
+                                        placeholderText = isDoctor ? 'Select Person or Speciality!' : 'Select Doctor or Speciality!';
                                         usersStream = null;
                                       } else {
                                         c1 = inactiveC;
@@ -411,7 +429,7 @@ class _DiscoverScreenState extends State<Discover> {
                         ),
                         (isEmpty) ? Center(
                             child: Text(
-                              'Contact your doctor now!',
+                              isDoctor ? 'Contact your patients now!' : 'Contact your doctor now!',
                               style: TextStyle(
                                 fontSize: MediaQuery.of(context).size.width * 0.05,
                                 fontFamily: 'Nunito',
@@ -423,7 +441,7 @@ class _DiscoverScreenState extends State<Discover> {
                             (c1 == inactiveC && c2 == inactiveC) ?
                             Center(
                                 child: Text(
-                                  'Select Doctor or Speciality!',
+                                  isDoctor ? 'Select Person or Speciality!' : 'Select Doctor or Speciality!',
                                   style: TextStyle(
                                     fontSize: MediaQuery.of(context).size.width * 0.05,
                                     fontFamily: 'Nunito',

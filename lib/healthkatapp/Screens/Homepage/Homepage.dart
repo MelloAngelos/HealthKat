@@ -9,6 +9,7 @@ import '../../chatroomListTile.dart';
 import '../../current_user.dart';
 import '../Chat/Chat.dart';
 import '../Discover/Discover.dart';
+import '../Home.dart';
 import '../Login/Login.dart';
 import '../Profile/Profile.dart';
 
@@ -33,12 +34,12 @@ class _HomepageScreenState extends State<Homepage> {
       setState(() {
         myUid = uid;
         loading_ = false;
-        getChatRooms(myUid);
+        getChatRooms();
       });
     });
   }
 
-  getChatRooms(String myUid) async {
+  getChatRooms() async {
     chatRoomsStream = await FirebaseFirestore.instance
         .collection("chatrooms")
         .where("users", arrayContains: myUid)
@@ -75,7 +76,7 @@ class _HomepageScreenState extends State<Homepage> {
     }
   }
 
-  Widget chatRoomsList({String myUid, String myName}) {
+  Widget chatRoomsList(String myName) {
     return StreamBuilder(
         stream: chatRoomsStream,
         builder: (context, snapshotChat) {
@@ -195,21 +196,13 @@ class _HomepageScreenState extends State<Homepage> {
                                               placeholder: AssetImage(
                                                   'assets/images/placeholder.png'),
                                             ),
-                                            onPressed: () => Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Profile())))
+                                            )
                                         : IconButton(
                                             padding: EdgeInsets.all(0),
                                             focusColor: Colors.white,
                                             icon: Image.asset(
                                                 'assets/images/placeholder.png'),
-                                            onPressed: () => Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Profile()))))),
+                                            ))),
                             SizedBox(
                               width: 40,
                             ),
@@ -262,7 +255,7 @@ class _HomepageScreenState extends State<Homepage> {
                         SizedBox(
                           height: 30,
                         ),
-                        chatRoomsList(myUid: myUid, myName: myName),
+                        chatRoomsList(myName),
 
                       ],
                     ),
