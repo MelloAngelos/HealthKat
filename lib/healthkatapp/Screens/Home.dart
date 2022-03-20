@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterapp/healthkatapp/Screens/Profile/Profile.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'AppointmentHistory/AppointmentHistory.dart';
 import 'Homepage/Homepage.dart';
 import 'Discover/Discover.dart';
 
@@ -14,7 +15,7 @@ class _HomeState extends State<Home> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget>[
     Homepage(),
-    Discover(),
+    AppointmentHistory(),
     Profile(),
   ];
 

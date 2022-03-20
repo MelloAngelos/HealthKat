@@ -13,6 +13,7 @@ import 'package:record_mp3/record_mp3.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../current_user.dart';
+import '../Home.dart';
 import '../OthersProfile/OthersProfile.dart';
 import '../Profile/Profile.dart';
 
@@ -429,6 +430,13 @@ class _ChatScreenState extends State<Chat> {
         },
         child: Scaffold(
             appBar: AppBar(
+              leading: IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Home()))),
               title: Container(
                 child: Consumer<CurrentUser>(builder: (context, userData, child) {
                   var phone = userData.phoneNumber;

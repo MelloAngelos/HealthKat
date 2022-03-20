@@ -26,6 +26,8 @@ class _ChatRoomListTileState extends State<ChatRoomListTile> {
     name = "${querySnapshot.docs[0]["displayName"]}";
     profilePicUrl = "${querySnapshot.docs[0]["profile"]}";
     print(widget.chatRoomId);
+    print(name);
+    print(profilePicUrl);
     setState(() {});
   }
 
