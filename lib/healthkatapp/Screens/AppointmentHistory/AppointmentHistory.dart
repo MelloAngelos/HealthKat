@@ -84,8 +84,13 @@ class _ViewHistoryState extends State<AppointmentHistory> {
                             tiles.add(
                               AppointmentTile(
                                   amDoctor: Provider.of<CurrentUser>(context,
-                                          listen: false)
-                                      .isDoctor,
+                                              listen: false)
+                                          .isDoctor &
+                                      (docID ==
+                                          Provider.of<CurrentUser>(context,
+                                                  listen: false)
+                                              .loggedInUser
+                                              .uid),
                                   dateTime: dateFormat.format(dateTime),
                                   userName: name,
                                   content: content,

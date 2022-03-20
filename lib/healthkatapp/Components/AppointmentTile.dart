@@ -40,6 +40,22 @@ class AppointmentTile extends StatefulWidget {
 }
 
 class _AppointmentTileState extends State<AppointmentTile> {
+  String doctorName = "";
+  getDoctorInfo() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: widget.docId)
+        .get();
+    doctorName = "${querySnapshot.docs[0]["displayName"]}";
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getDoctorInfo();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -54,7 +70,9 @@ class _AppointmentTileState extends State<AppointmentTile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Patient Name: ${widget.userName}',
+                    !widget.amDoctor
+                        ? 'Doctor Name: ${doctorName}'
+                        : 'Patient Name: ${widget.userName}',
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
