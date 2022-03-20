@@ -18,6 +18,7 @@ class Discover extends StatefulWidget {
 class _DiscoverScreenState extends State<Discover> {
   bool loading_ = false;
   bool isSearching = false;
+  bool isEmpty = true;
   String myUid, myName;
   Stream usersStream;
   final FocusNode searchFocus = FocusNode();
@@ -167,6 +168,8 @@ class _DiscoverScreenState extends State<Discover> {
         print(myUid);
         print("Search Snap has data?");
         print(snapshot.hasData);
+        print(c1);
+        print(c2);
         if(usersStream == null)
           return Center(
             child: Text(
@@ -288,10 +291,11 @@ class _DiscoverScreenState extends State<Discover> {
                                     onChanged: (value) {
                                       setState(() {
                                         currentText = value.toLowerCase();
-                                        if (value != "") {
+                                        if (value != "" ) {
                                           isSearching = true;
                                           onSearchBtnClick(isDoctor);
                                           placeholderText = 'Select Doctor or Speciality!';
+                                          isEmpty = false;
                                         } else{
                                           speciality = '';
                                           c1 = inactiveC;
@@ -299,6 +303,7 @@ class _DiscoverScreenState extends State<Discover> {
                                           selectedBoxWidth1 = 1;
                                           selectedBoxWidth2 = 1;
                                           isSearching = false;
+                                          isEmpty = true;
                                         }
                                       });
                                     },
@@ -404,8 +409,30 @@ class _DiscoverScreenState extends State<Discover> {
                         SizedBox(
                           height: 30,
                         ),
-                        searchUsersList(myUid: myUid, myName: myName)
-
+                        (isEmpty) ? Center(
+                            child: Text(
+                              'Contact your doctor now!',
+                              style: TextStyle(
+                                fontSize: MediaQuery.of(context).size.width * 0.05,
+                                fontFamily: 'Nunito',
+                                fontWeight: FontWeight.w700,
+                                color: Colors.green[900],
+                                /* letterSpacing: 0.0, */
+                              ),
+                            )) : (
+                            (c1 == inactiveC && c2 == inactiveC) ?
+                            Center(
+                                child: Text(
+                                  'Select Doctor or Speciality!',
+                                  style: TextStyle(
+                                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                                    fontFamily: 'Nunito',
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.green[900],
+                                    /* letterSpacing: 0.0, */
+                                  ),
+                                )) : searchUsersList(myUid: myUid, myName: myName)
+                        )
                       ],
                     ),
                   );
