@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'Screens/Chat/Chat.dart';
+import '../Screens/Chat/Chat.dart';
 
 class ChatRoomListTile extends StatefulWidget {
   final String lastMessage, chatRoomId, myUid;

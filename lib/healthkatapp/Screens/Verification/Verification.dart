@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
-import '../current_user.dart';
+import '../../Components/current_user.dart';
 
-import 'Home.dart';
-import 'Login/Login.dart';
+import '../Home/Home.dart';
+import '../Login/Login.dart';
 
 class VerificationScreen extends StatefulWidget {
   bool isVerified;

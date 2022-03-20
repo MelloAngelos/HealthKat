@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
-import '../../user_tile.dart';
-import '../../current_user.dart';
+import '../../Components/user_tile.dart';
+import '../../Components/current_user.dart';
 import '../Login/Login.dart';
 
 class Admin extends StatefulWidget {

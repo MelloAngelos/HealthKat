@@ -5,7 +5,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
 import '../../Components/AppointmentTile.dart';
-import '../../current_user.dart';
+import '../../Components/current_user.dart';
 
 class AppointmentHistory extends StatefulWidget {
   AppointmentHistory();

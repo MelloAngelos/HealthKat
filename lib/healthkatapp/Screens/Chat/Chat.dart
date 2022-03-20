@@ -12,8 +12,8 @@ import 'package:random_string/random_string.dart';
 import 'package:record_mp3/record_mp3.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../current_user.dart';
-import '../Home.dart';
+import '../../Components/current_user.dart';
+import '../Home/Home.dart';
 import '../NewAppointment/NewAppointment.dart';
 import '../OthersProfile/OthersProfile.dart';
 import '../Profile/Profile.dart';

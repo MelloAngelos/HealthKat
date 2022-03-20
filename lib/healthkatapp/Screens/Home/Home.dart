@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutterapp/healthkatapp/Screens/Profile/Profile.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'AppointmentHistory/AppointmentHistory.dart';
-import 'Homepage/Homepage.dart';
-import 'Discover/Discover.dart';
+import '../AppointmentHistory/AppointmentHistory.dart';
+import '../Homepage/Homepage.dart';
+import '../Discover/Discover.dart';
 
 class Home extends StatefulWidget {
   Home({Key key, }) : super(key: key);

@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 
-import '../../current_user.dart';
+import '../../Components/current_user.dart';
 
 class NewAppointment extends StatefulWidget {
   final String docId;

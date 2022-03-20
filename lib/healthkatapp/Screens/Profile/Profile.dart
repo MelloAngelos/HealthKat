@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import '../../Components/SearchBar.dart';
-import '../../current_user.dart';
+import '../../Components/current_user.dart';
 import '../Login/Login.dart';
 
 class Profile extends StatefulWidget {

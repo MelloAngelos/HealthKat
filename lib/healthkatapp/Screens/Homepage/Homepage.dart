@@ -5,11 +5,11 @@ import 'package:flutterapp/helpers/transform/transform.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
-import '../../chatroomListTile.dart';
-import '../../current_user.dart';
+import '../../Components/chatroomListTile.dart';
+import '../../Components/current_user.dart';
 import '../Chat/Chat.dart';
 import '../Discover/Discover.dart';
-import '../Home.dart';
+import '../Home/Home.dart';
 import '../Login/Login.dart';
 import '../Profile/Profile.dart';
 

@@ -9,8 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
-import '../../current_user.dart';
-import '../Verification.dart';
+import '../../Components/current_user.dart';
+import '../Verification/Verification.dart';
 
 
 class Register extends StatefulWidget {

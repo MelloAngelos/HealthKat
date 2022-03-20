@@ -4,7 +4,7 @@ import 'package:flutterapp/healthkatapp/Screens/NewAppointment/NewAppointment.da
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import '../../Components/SearchBar.dart';
-import '../../current_user.dart';
+import '../../Components/current_user.dart';
 
 class OthersProfile extends StatefulWidget {
   final String id;
