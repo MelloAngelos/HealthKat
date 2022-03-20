@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../current_user.dart';
 import '../Home.dart';
+import '../NewAppointment/NewAppointment.dart';
 import '../OthersProfile/OthersProfile.dart';
 import '../Profile/Profile.dart';
 
@@ -33,9 +34,25 @@ class _ChatScreenState extends State<Chat> {
   bool isPlayingMsg = false, isRecording = false, isSending = false;
   String recordFilePath;
   AudioPlayer audioPlayer = AudioPlayer();
-
+  bool chatWithDoctor = false;
 
   @override
+  getChatWithDoctor() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: widget.chatWithUid)
+        .get();
+    chatWithDoctor =
+        "${querySnapshot.docs[0]["isDoctor"]}".toLowerCase() == 'true';
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getChatWithDoctor();
+    super.initState();
+  }
+
   void didChangeDependencies() {
     super.didChangeDependencies();
     loading_ = true;
@@ -91,10 +108,9 @@ class _ChatScreenState extends State<Chat> {
         };
 
         FirebaseFirestore.instance
-                        .collection("chatrooms")
-                        .doc(chatRoomId)
-                        .update(lastMessageInfoMap);
-
+            .collection("chatrooms")
+            .doc(chatRoomId)
+            .update(lastMessageInfoMap);
 
         if (sendClicked) {
           // remove the text in the message input field
@@ -105,12 +121,8 @@ class _ChatScreenState extends State<Chat> {
     }
   }
 
-  sendAudioMsg(
-      String myUid,
-      String myProfilePic,
-      String chatRoomId,
+  sendAudioMsg(String myUid, String myProfilePic, String chatRoomId,
       String audioMsg) async {
-
     messageId = DateTime.now().millisecondsSinceEpoch.toString();
 
     var lastMessageTs = DateTime.now();
@@ -131,26 +143,26 @@ class _ChatScreenState extends State<Chat> {
           .doc(messageId)
           .set(messageInfoMap)
           .then((value) {
-              setState(() {
-                isSending = false;
-              });
-              Map<String, dynamic> lastMessageInfoMap = {
-                "lastMessage": "Audio Message",
-                "lastMessageSendTs": lastMessageTs,
-                "lastMessageSendBy": myUid
-              };
+        setState(() {
+          isSending = false;
+        });
+        Map<String, dynamic> lastMessageInfoMap = {
+          "lastMessage": "Audio Message",
+          "lastMessageSendTs": lastMessageTs,
+          "lastMessageSendBy": myUid
+        };
 
-            FirebaseFirestore.instance
-                .collection("chatrooms")
-                .doc(chatRoomId)
-                .update(lastMessageInfoMap);
-          });
-    } else {
-    }
+        FirebaseFirestore.instance
+            .collection("chatrooms")
+            .doc(chatRoomId)
+            .update(lastMessageInfoMap);
+      });
+    } else {}
   }
 
-  Widget chatMessageTile(String message, bool sendByMe, String type, Timestamp ts) {
-    if(type == "Text")
+  Widget chatMessageTile(
+      String message, bool sendByMe, String type, Timestamp ts) {
+    if (type == "Text")
       return Row(
         mainAxisAlignment:
             sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -172,64 +184,62 @@ class _ChatScreenState extends State<Chat> {
                 padding: EdgeInsets.all(20),
                 child: Text(
                   message,
-                  style: TextStyle(color: sendByMe ? Colors.white : Colors.black),
+                  style:
+                      TextStyle(color: sendByMe ? Colors.white : Colors.black),
                 )),
           ),
         ],
       );
-      else if(type == "Audio") {
-        return Row(
-          mainAxisAlignment:
-          sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-          children: [
-            Flexible(
+    else if (type == "Audio") {
+      return Row(
+        mainAxisAlignment:
+            sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          Flexible(
               child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      bottomRight:
-                      sendByMe ? Radius.circular(0) : Radius.circular(24),
-                      topRight: Radius.circular(24),
-                      bottomLeft:
-                      sendByMe ? Radius.circular(24) : Radius.circular(0),
-                    ),
-                    color: sendByMe ? Colors.green[500] : Colors.grey[200],
-                  ),
-                  padding: EdgeInsets.all(20),
-                  child: GestureDetector(
-                    onTap: () {
-                      if(isPlayingMsg == false) {
-                        _loadFile(Uri.parse(message));
-                      } else {
-                        audioPlayer.stop();
-                        setState(() {
-                          isPlayingMsg = false;
-                          print(isPlayingMsg);
-                        });
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(isPlayingMsg ? Icons.stop : Icons.play_arrow),
-                            Text(
-                              'Audio-${ts.millisecondsSinceEpoch.toString()}',
-                              maxLines: 10,
-                            ),
-                          ],
-                        )],
-                    )
-                  ),
-              )
+            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                bottomRight:
+                    sendByMe ? Radius.circular(0) : Radius.circular(24),
+                topRight: Radius.circular(24),
+                bottomLeft: sendByMe ? Radius.circular(24) : Radius.circular(0),
+              ),
+              color: sendByMe ? Colors.green[500] : Colors.grey[200],
             ),
-          ],
-        );
-
-      }
+            padding: EdgeInsets.all(20),
+            child: GestureDetector(
+                onTap: () {
+                  if (isPlayingMsg == false) {
+                    _loadFile(Uri.parse(message));
+                  } else {
+                    audioPlayer.stop();
+                    setState(() {
+                      isPlayingMsg = false;
+                      print(isPlayingMsg);
+                    });
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(isPlayingMsg ? Icons.stop : Icons.play_arrow),
+                        Text(
+                          'Audio-${ts.millisecondsSinceEpoch.toString()}',
+                          maxLines: 10,
+                        ),
+                      ],
+                    )
+                  ],
+                )),
+          )),
+        ],
+      );
+    }
   }
 
   Widget chatMessages(String myUid) {
@@ -244,8 +254,8 @@ class _ChatScreenState extends State<Chat> {
                     reverse: true,
                     itemBuilder: (context, index) {
                       DocumentSnapshot ds = snapshot.data.docs[index];
-                      return chatMessageTile(
-                          ds["message"], myUid == ds["sendBy"], ds["type"], ds["ts"]);
+                      return chatMessageTile(ds["message"],
+                          myUid == ds["sendBy"], ds["type"], ds["ts"]);
                     })
                 : Center(
                     child: Text(
@@ -307,15 +317,13 @@ class _ChatScreenState extends State<Chat> {
     setState(() {});
   }
 
-  void stopRecord(String myUid,
-      String myProfilePic,
-      String chatRoomId) async {
+  void stopRecord(String myUid, String myProfilePic, String chatRoomId) async {
     bool s = RecordMp3.instance.stop();
     if (s) {
       setState(() {
         isSending = true;
       });
-      await uploadAudio(myUid,myProfilePic, chatRoomId);
+      await uploadAudio(myUid, myProfilePic, chatRoomId);
 
       setState(() {
         isPlayingMsg = false;
@@ -326,12 +334,10 @@ class _ChatScreenState extends State<Chat> {
   Future<void> play() async {
     if (recordFilePath != null && File(recordFilePath).existsSync()) {
       await audioPlayer.play(
-          recordFilePath,
+        recordFilePath,
       );
-
     }
   }
-
 
   Future _loadFile(Uri url) async {
     final bytes = await readBytes(url);
@@ -353,6 +359,7 @@ class _ChatScreenState extends State<Chat> {
       });
     }
   }
+
   int i = 0;
 
   Future<String> getFilePath() async {
@@ -365,12 +372,8 @@ class _ChatScreenState extends State<Chat> {
     return sdPath + "/test_${i++}.mp3";
   }
 
-  uploadAudio(String myUid,
-      String myProfilePic,
-      String chatRoomId) async {
-    final Reference storageReference = FirebaseStorage.instance
-        .ref()
-        .child(
+  uploadAudio(String myUid, String myProfilePic, String chatRoomId) async {
+    final Reference storageReference = FirebaseStorage.instance.ref().child(
         'records/audio_${DateTime.now().millisecondsSinceEpoch.toString()}');
 
     UploadTask uploadTask = storageReference.putFile(File(recordFilePath));
@@ -383,8 +386,6 @@ class _ChatScreenState extends State<Chat> {
     }).catchError((onError) {
       print(onError);
     });
-
-
   }
 
   Future<void> _makePhoneCall(String url) async {
@@ -396,11 +397,12 @@ class _ChatScreenState extends State<Chat> {
   }
 
   showAlertDialog(BuildContext context, String name) {
-
     // set up the button
     Widget okButton = TextButton(
       child: Text("OK"),
-      onPressed: () { Navigator.pop(context); },
+      onPressed: () {
+        Navigator.pop(context);
+      },
     );
 
     // set up the AlertDialog
@@ -421,7 +423,6 @@ class _ChatScreenState extends State<Chat> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -432,17 +433,14 @@ class _ChatScreenState extends State<Chat> {
             appBar: AppBar(
               leading: IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              Home()))),
+                  onPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Home()))),
               title: Container(
-                child: Consumer<CurrentUser>(builder: (context, userData, child) {
+                child:
+                    Consumer<CurrentUser>(builder: (context, userData, child) {
                   var phone = userData.phoneNumber;
                   var name = userData.displayName;
-                  return Row(
-                  children: [
+                  return Row(children: [
                     CircleAvatar(
                       radius: 20,
                       child: ClipRRect(
@@ -459,24 +457,24 @@ class _ChatScreenState extends State<Chat> {
                     ),
                     SizedBox(width: 10),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.35,
-                      child:
-                      Text(widget.name, maxLines:1, overflow:TextOverflow.fade)
-                    ),
+                        width: MediaQuery.of(context).size.width * 0.35,
+                        child: Text(widget.name,
+                            maxLines: 1, overflow: TextOverflow.fade)),
                     Spacer(),
-                    IconButton(icon: new Icon(Icons.phone),
-                        onPressed: () {
-                          setState(() {
-                            if(phone!= null) {
-                              var url = 'tel:+30' + phone;
-                              _makePhoneCall(url);
-                            } else {
-                              showAlertDialog(context, name);
-                            }
-                          });
-                        },
-                      ),
-                    SizedBox(width:10),
+                    IconButton(
+                      icon: new Icon(Icons.phone),
+                      onPressed: () {
+                        setState(() {
+                          if (phone != null) {
+                            var url = 'tel:+30' + phone;
+                            _makePhoneCall(url);
+                          } else {
+                            showAlertDialog(context, name);
+                          }
+                        });
+                      },
+                    ),
+                    SizedBox(width: 10),
                     IconButton(
                         icon: Icon(Icons.info_outline_rounded),
                         onPressed: () {
@@ -487,108 +485,127 @@ class _ChatScreenState extends State<Chat> {
                                       OthersProfile(widget.chatWithUid)));
                         }),
                   ]);
-                }
-                ),
+                }),
               ),
             ),
             body: SafeArea(child:
                 Consumer<CurrentUser>(builder: (context, userData, child) {
-                var myUid = userData.uid;
-                var myProfilePic = userData.photoUrl;
-                var chatRoomId = getChatRoomIdByUids(widget.chatWithUid, myUid);
-                getAndSetMessages(chatRoomId);
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  child: Container(
-                    child: Stack(children: [
-                      chatMessages(myUid),
-                      Positioned.fill(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            height: 45.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color: Colors.grey.shade200,
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 10.0,
-                                ),
+              var myUid = userData.uid;
+              var myProfilePic = userData.photoUrl;
+              var chatRoomId = getChatRoomIdByUids(widget.chatWithUid, myUid);
+              getAndSetMessages(chatRoomId);
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                child: Container(
+                  child: Stack(children: [
+                    chatMessages(myUid),
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: 45.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.grey.shade200,
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              SizedBox(
+                                width: 10.0,
+                              ),
                               Container(
-                                height: 40,
-                                margin: EdgeInsets.fromLTRB(5, 5, 10, 5),
-                                decoration: BoxDecoration(boxShadow: [
-                                  BoxShadow(
-                                      color: isRecording
-                                          ? Colors.white
-                                          : Colors.black12,
-                                      spreadRadius: 4)
-                                ], color: Colors.green[500], shape: BoxShape.circle),
-                                child: GestureDetector(
-                                  onTap: () {
-                                        if(!isRecording) {
-                                          startRecord();
-                                          setState(() {
-                                            isRecording = true;
-                                          });
-                                        } else {
-                                          stopRecord(myUid, myProfilePic, chatRoomId);
-                                          setState(() {
-                                            isRecording = false;
-                                          });
-                                        }
-                                  },
-                                  child: Container(
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(
-                                        Icons.mic,
-                                        color: Colors.white,
-                                        size: 20,
-                                      )),
-                                )),
-                                SizedBox(
-                                  width: 8.0,
+                                  height: 40,
+                                  margin: EdgeInsets.fromLTRB(5, 5, 10, 5),
+                                  decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: isRecording
+                                                ? Colors.white
+                                                : Colors.black12,
+                                            spreadRadius: 4)
+                                      ],
+                                      color: Colors.green[500],
+                                      shape: BoxShape.circle),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (!isRecording) {
+                                        startRecord();
+                                        setState(() {
+                                          isRecording = true;
+                                        });
+                                      } else {
+                                        stopRecord(
+                                            myUid, myProfilePic, chatRoomId);
+                                        setState(() {
+                                          isRecording = false;
+                                        });
+                                      }
+                                    },
+                                    child: Container(
+                                        padding: EdgeInsets.all(10),
+                                        child: Icon(
+                                          Icons.mic,
+                                          color: Colors.white,
+                                          size: 20,
+                                        )),
+                                  )),
+                              SizedBox(
+                                width: 8.0,
+                              ),
+                              Expanded(
+                                child: TextField(
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: 'Type new message'),
+                                    onSubmitted: (value) {
+                                      addMessage(
+                                          myUid: myUid,
+                                          myProfilePic: myProfilePic,
+                                          chatRoomId: chatRoomId,
+                                          sendClicked: true);
+                                    },
+                                    controller: messageTextEdittingController,
+                                    style: TextStyle(
+                                      color: Colors.green[900],
+                                    )),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  addMessage(
+                                      myUid: myUid,
+                                      myProfilePic: myProfilePic,
+                                      chatRoomId: chatRoomId,
+                                      sendClicked: true);
+                                },
+                                child: Icon(
+                                  Icons.send,
+                                  color: Colors.green[500],
                                 ),
-                                Expanded(
-                                  child: TextField(
-                                      decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: 'Type new message'),
-                                      onSubmitted: (value) {
-                                        addMessage(
-                                            myUid: myUid,
-                                            myProfilePic: myProfilePic,
-                                            chatRoomId: chatRoomId,
-                                            sendClicked: true);
-                                      },
-                                      controller: messageTextEdittingController,
-                                      style: TextStyle(
-                                        color: Colors.green[900],
-                                      )),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    addMessage(
-                                        myUid: myUid,
-                                        myProfilePic: myProfilePic,
-                                        chatRoomId: chatRoomId,
-                                        sendClicked: true);
-                                  },
-                                  child: Icon(
-                                    Icons.send,
-                                    color: Colors.green[500],
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                              ],
-                            ),
+                              ),
+                              SizedBox(width: 10),
+                            ],
                           ),
                         ),
                       ),
-                    ]),
-                  ),
+                    ),
+                    Container(
+                      height: 40,
+                      child: chatWithDoctor == true
+                          ? ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => NewAppointment(
+                                            widget.chatWithUid)));
+                              },
+                              child: Center(child: Text('+ New Appointment')))
+                          : SizedBox(
+                              height: 10,
+                            ),
+                    ),
+                  ]),
+                ),
               );
             }))));
   }

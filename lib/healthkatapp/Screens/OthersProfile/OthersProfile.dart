@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/healthkatapp/Screens/NewAppointment/NewAppointment.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import '../../Components/SearchBar.dart';
@@ -151,7 +152,19 @@ class _ProfileState extends State<OthersProfile> {
                       SizedBox(height: 200),
                       Text("More Actions",
                           style: TextStyle(color: Colors.grey)),
-                      SearchBar(),
+                      isDoctor == true
+                          ? ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            NewAppointment(widget.id)));
+                              },
+                              child: Center(child: Text('+ New Appointment')))
+                          : SizedBox(
+                              height: 10,
+                            ),
                       Divider(),
                       Text("Privacy", style: TextStyle(color: Colors.grey)),
                       TextButton(

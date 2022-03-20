@@ -17,7 +17,7 @@ import '../../current_user.dart';
 
 class NewAppointment extends StatefulWidget {
   final String docId;
-  NewAppointment({this.docId});
+  NewAppointment(this.docId);
   @override
   _NewAppointmentState createState() => _NewAppointmentState();
 }
@@ -143,7 +143,7 @@ class _NewAppointmentState extends State<NewAppointment> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 28,
-                        fontFamily: 'Nunito',
+                        fontFamily: 'Roboto',
                       ),
                     ),
                   )),
@@ -223,47 +223,40 @@ class _NewAppointmentState extends State<NewAppointment> {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 13),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(40)),
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.blue,
-                                    minimumSize: const Size.fromHeight(50),
-                                    shape: StadiumBorder()),
-                                onPressed: () {
-                                  DatePicker.showDateTimePicker(context,
-                                          showTitleActions: true,
-                                          minTime: new DateTime.now(),
-                                          maxTime: DateTime(2024, 6, 7),
-                                          onChanged: (date) {
-                                    print('change $date');
-                                  }, onConfirm: (date) {
-                                    print('confirm $date');
-                                  },
-                                          currentTime: DateTime.now(),
-                                          locale: LocaleType.en)
-                                      .then((date) {
-                                    dateTime = date;
-                                    setState(() {});
-                                    print(dateTime);
-                                  });
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, shape: StadiumBorder()),
+                              onPressed: () {
+                                DatePicker.showDateTimePicker(context,
+                                        showTitleActions: true,
+                                        minTime: new DateTime.now(),
+                                        maxTime: DateTime(2024, 6, 7),
+                                        onChanged: (date) {
+                                  print('change $date');
+                                }, onConfirm: (date) {
+                                  print('confirm $date');
                                 },
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      dateTime == null
-                                          ? 'Pick a date'
-                                          : dateFormat.format(dateTime),
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    Icon(Icons.date_range),
-                                  ],
-                                )),
-                          ),
+                                        currentTime: DateTime.now(),
+                                        locale: LocaleType.en)
+                                    .then((date) {
+                                  dateTime = date;
+                                  setState(() {});
+                                  print(dateTime);
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    dateTime == null
+                                        ? 'Pick a date'
+                                        : dateFormat.format(dateTime),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  Icon(Icons.date_range),
+                                ],
+                              )),
                         ),
                       ),
                       SizedBox(height: 10),
@@ -271,29 +264,23 @@ class _NewAppointmentState extends State<NewAppointment> {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 13),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(40)),
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.green,
-                                    minimumSize: const Size.fromHeight(50),
-                                    shape: StadiumBorder()),
-                                onPressed: () {
-                                  if (dateTime == null)
-                                    BotToast.showSimpleNotification(
-                                        title:
-                                            'Please pick a date to proceed!');
-                                  else {
-                                    pushData();
-                                  }
-                                },
-                                child: Text(
-                                  "Submit",
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                          ),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.green,
+                                  shape: StadiumBorder()),
+                              onPressed: () {
+                                if (dateTime == null)
+                                  BotToast.showSimpleNotification(
+                                      title: 'Please pick a date to proceed!');
+                                else {
+                                  pushData();
+                                }
+                              },
+                              child: Center(
+                                  child: Text(
+                                "Submit",
+                                style: TextStyle(color: Colors.white),
+                              ))),
                         ),
                       ),
                     ],
