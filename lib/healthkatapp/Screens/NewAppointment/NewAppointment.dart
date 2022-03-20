@@ -16,8 +16,8 @@ import 'package:intl/intl.dart';
 import '../../current_user.dart';
 
 class NewAppointment extends StatefulWidget {
-  final String docId = 'vhTV0S9ao9YG9a7r9UI9YIfK3Nv1';
-  NewAppointment();
+  final String docId;
+  NewAppointment({this.docId});
   @override
   _NewAppointmentState createState() => _NewAppointmentState();
 }
