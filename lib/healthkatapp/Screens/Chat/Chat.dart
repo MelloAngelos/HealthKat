@@ -35,8 +35,8 @@ class _ChatScreenState extends State<Chat> {
   String recordFilePath;
   AudioPlayer audioPlayer = AudioPlayer();
   bool chatWithDoctor = false;
+  String phone = "";
 
-  @override
   getChatWithDoctor() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection("users")
@@ -44,6 +44,7 @@ class _ChatScreenState extends State<Chat> {
         .get();
     chatWithDoctor =
         "${querySnapshot.docs[0]["isDoctor"]}".toLowerCase() == 'true';
+    phone = "${querySnapshot.docs[0]["phone"]}";
     setState(() {});
   }
 
@@ -53,6 +54,7 @@ class _ChatScreenState extends State<Chat> {
     super.initState();
   }
 
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     loading_ = true;
@@ -437,176 +439,175 @@ class _ChatScreenState extends State<Chat> {
                       MaterialPageRoute(builder: (context) => Home()))),
               title: Container(
                 child:
-                    Consumer<CurrentUser>(builder: (context, userData, child) {
-                  var phone = userData.phoneNumber;
-                  var name = userData.displayName;
-                  return Row(children: [
-                    CircleAvatar(
-                      radius: 20,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: widget.profilePic != "" &&
-                                widget.profilePic != "null"
-                            ? FadeInImage(
-                                image: NetworkImage(widget.profilePic),
-                                placeholder:
-                                    AssetImage('assets/images/placeholder.png'),
-                              )
-                            : Image.asset('assets/images/placeholder.png'),
-                      ),
+                Row(children: [
+                  CircleAvatar(
+                    radius: 20,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: widget.profilePic != "" &&
+                              widget.profilePic != "null"
+                          ? FadeInImage(
+                              image: NetworkImage(widget.profilePic),
+                              placeholder:
+                                  AssetImage('assets/images/placeholder.png'),
+                            )
+                          : Image.asset('assets/images/placeholder.png'),
                     ),
-                    SizedBox(width: 10),
-                    Container(
-                        width: MediaQuery.of(context).size.width * 0.35,
-                        child: Text(widget.name,
-                            maxLines: 1, overflow: TextOverflow.fade)),
-                    Spacer(),
-                    IconButton(
-                      icon: new Icon(Icons.phone),
+                  ),
+                  SizedBox(width: 10),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      child: Text(widget.name,
+                          maxLines: 1, overflow: TextOverflow.fade)),
+                  Spacer(),
+                  IconButton(
+                    icon: new Icon(Icons.phone),
+                    onPressed: () {
+                      setState(() {
+                        if (phone != "") {
+                          var url = 'tel:+30' + phone;
+                          _makePhoneCall(url);
+                        } else {
+                          showAlertDialog(context, widget.name);
+                        }
+                      });
+                    },
+                  ),
+                  SizedBox(width: 10),
+                  IconButton(
+                      icon: Icon(Icons.info_outline_rounded),
                       onPressed: () {
-                        setState(() {
-                          if (phone != null) {
-                            var url = 'tel:+30' + phone;
-                            _makePhoneCall(url);
-                          } else {
-                            showAlertDialog(context, name);
-                          }
-                        });
-                      },
-                    ),
-                    SizedBox(width: 10),
-                    IconButton(
-                        icon: Icon(Icons.info_outline_rounded),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      OthersProfile(widget.chatWithUid)));
-                        }),
-                  ]);
-                }),
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    OthersProfile(widget.chatWithUid)));
+                      }),
+                ])
               ),
             ),
             body: SafeArea(child:
                 Consumer<CurrentUser>(builder: (context, userData, child) {
-              var myUid = userData.uid;
-              var myProfilePic = userData.photoUrl;
-              var chatRoomId = getChatRoomIdByUids(widget.chatWithUid, myUid);
-              getAndSetMessages(chatRoomId);
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                child: Container(
-                  child: Stack(children: [
-                    chatMessages(myUid),
-                    Positioned.fill(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: 45.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: Colors.grey.shade200,
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              SizedBox(
-                                width: 10.0,
-                              ),
-                              Container(
-                                  height: 40,
-                                  margin: EdgeInsets.fromLTRB(5, 5, 10, 5),
-                                  decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: isRecording
-                                                ? Colors.white
-                                                : Colors.black12,
-                                            spreadRadius: 4)
-                                      ],
-                                      color: Colors.green[500],
-                                      shape: BoxShape.circle),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (!isRecording) {
-                                        startRecord();
-                                        setState(() {
-                                          isRecording = true;
-                                        });
-                                      } else {
-                                        stopRecord(
-                                            myUid, myProfilePic, chatRoomId);
-                                        setState(() {
-                                          isRecording = false;
-                                        });
-                                      }
-                                    },
-                                    child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        child: Icon(
-                                          Icons.mic,
-                                          color: Colors.white,
-                                          size: 20,
+                    var myUid = userData.uid;
+                    var myProfilePic = userData.photoUrl;
+                    var chatRoomId = getChatRoomIdByUids(widget.chatWithUid, myUid);
+                    getAndSetMessages(chatRoomId);
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      child: Container(
+                        child: Stack(children: [
+                          chatMessages(myUid),
+                          Positioned.fill(
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                height: 45.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: Colors.grey.shade200,
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 10.0,
+                                    ),
+                                    Container(
+                                        height: 40,
+                                        margin: EdgeInsets.fromLTRB(5, 5, 10, 5),
+                                        decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: isRecording
+                                                      ? Colors.white
+                                                      : Colors.black12,
+                                                  spreadRadius: 4)
+                                            ],
+                                            color: Colors.green[500],
+                                            shape: BoxShape.circle),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            if (!isRecording) {
+                                              startRecord();
+                                              setState(() {
+                                                isRecording = true;
+                                              });
+                                            } else {
+                                              stopRecord(
+                                                  myUid, myProfilePic, chatRoomId);
+                                              setState(() {
+                                                isRecording = false;
+                                              });
+                                            }
+                                          },
+                                          child: Container(
+                                              padding: EdgeInsets.all(10),
+                                              child: Icon(
+                                                Icons.mic,
+                                                color: Colors.white,
+                                                size: 20,
+                                              )),
                                         )),
-                                  )),
-                              SizedBox(
-                                width: 8.0,
-                              ),
-                              Expanded(
-                                child: TextField(
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: 'Type new message'),
-                                    onSubmitted: (value) {
-                                      addMessage(
-                                          myUid: myUid,
-                                          myProfilePic: myProfilePic,
-                                          chatRoomId: chatRoomId,
-                                          sendClicked: true);
-                                    },
-                                    controller: messageTextEdittingController,
-                                    style: TextStyle(
-                                      color: Colors.green[900],
-                                    )),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  addMessage(
-                                      myUid: myUid,
-                                      myProfilePic: myProfilePic,
-                                      chatRoomId: chatRoomId,
-                                      sendClicked: true);
-                                },
-                                child: Icon(
-                                  Icons.send,
-                                  color: Colors.green[500],
+                                    SizedBox(
+                                      width: 8.0,
+                                    ),
+                                    Expanded(
+                                      child: TextField(
+                                          decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: 'Type new message'),
+                                          onSubmitted: (value) {
+                                            addMessage(
+                                                myUid: myUid,
+                                                myProfilePic: myProfilePic,
+                                                chatRoomId: chatRoomId,
+                                                sendClicked: true);
+                                          },
+                                          controller: messageTextEdittingController,
+                                          style: TextStyle(
+                                            color: Colors.green[900],
+                                          )),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        addMessage(
+                                            myUid: myUid,
+                                            myProfilePic: myProfilePic,
+                                            chatRoomId: chatRoomId,
+                                            sendClicked: true);
+                                      },
+                                      child: Icon(
+                                        Icons.send,
+                                        color: Colors.green[500],
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                  ],
                                 ),
                               ),
-                              SizedBox(width: 10),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 40,
-                      child: chatWithDoctor == true
-                          ? ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => NewAppointment(
-                                            widget.chatWithUid)));
-                              },
-                              child: Center(child: Text('+ New Appointment')))
-                          : SizedBox(
-                              height: 10,
                             ),
-                    ),
-                  ]),
-                ),
-              );
-            }))));
+                          ),
+                          Container(
+                            height: 40,
+                            child: chatWithDoctor == true
+                                ? ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => NewAppointment(
+                                                  widget.chatWithUid)));
+                                    },
+                                    child: Center(child: Text('+ New Appointment')))
+                                : SizedBox(
+                                    height: 10,
+                                  ),
+                          ),
+                        ]),
+                      ),
+                    );
+                })
+            )
+        )
+    );
   }
 }
