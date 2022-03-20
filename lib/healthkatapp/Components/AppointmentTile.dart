@@ -12,11 +12,13 @@ class AppointmentTile extends StatefulWidget {
   final String status;
   final bool changeStatus;
   final bool cancelAp;
+  final String dateTime;
   Function onPress;
 
   AppointmentTile({
     this.userName,
     this.content,
+    this.dateTime,
     //this.location,
     this.docId,
     this.uid,
@@ -52,6 +54,15 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.1),
                   ),
+                  SizedBox(height: 5),
+                  Text(
+                    'When: ${widget.dateTime}',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.1),
+                  ),
+                  SizedBox(height: 5),
                   Text(
                     widget.status != "Done" ? 'Status: ${widget.status}' : "",
                     style: TextStyle(
@@ -66,16 +77,25 @@ class _AppointmentTileState extends State<AppointmentTile> {
                 height: 20,
               ),
               Visibility(
-                visible: widget.content != null ? true : false,
-                child: Text(
-                  '${widget.content}',
-                  style: TextStyle(
-                    fontSize: 17,
-                    letterSpacing: 0.15,
-                    height: 1.3,
-                  ),
-                ),
-              ),
+                  visible: widget.content != null ? true : false,
+                  child: Row(children: [
+                    Text(
+                      'Description: ',
+                      style: TextStyle(
+                        fontSize: 17,
+                        letterSpacing: 0.15,
+                        height: 1.3,
+                      ),
+                    ),
+                    Text(
+                      '${widget.content}',
+                      style: TextStyle(
+                        fontSize: 17,
+                        letterSpacing: 0.15,
+                        height: 1.3,
+                      ),
+                    ),
+                  ])),
               SizedBox(
                 height: 4,
               ),

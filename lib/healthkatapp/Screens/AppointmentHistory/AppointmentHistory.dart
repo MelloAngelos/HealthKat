@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +14,7 @@ class AppointmentHistory extends StatefulWidget {
 }
 
 class _ViewHistoryState extends State<AppointmentHistory> {
+  DateFormat dateFormat = DateFormat("dd/MM/yyyy HH:mm");
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -52,7 +54,7 @@ class _ViewHistoryState extends State<AppointmentHistory> {
                         stream: FirebaseFirestore.instance
                             .collection('appointments')
                             // .orderBy('date')
-                            .where('uid',
+                            .where('doctorID',
                                 isEqualTo: Provider.of<CurrentUser>(context,
                                         listen: false)
                                     .loggedInUser
@@ -77,6 +79,7 @@ class _ViewHistoryState extends State<AppointmentHistory> {
                             final windowID = window['doctorID'];
                             String status = window['appointmentStatus'];
                             final docID = window['doctorID'];
+                            final dateTime = window['dateTime'].toDate();
                             bool cancelAp;
 
                             try {
@@ -90,11 +93,12 @@ class _ViewHistoryState extends State<AppointmentHistory> {
 
                             tiles.add(
                               AppointmentTile(
+                                dateTime: dateFormat.format(dateTime),
                                 userName: name,
                                 content: content,
                                 status: status,
                                 docId: docID,
-                                changeStatus: false,
+                                changeStatus: true,
                                 cancelAp: cancelAp,
                               ),
                             );
