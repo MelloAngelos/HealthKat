@@ -25,9 +25,20 @@ class _ViewHistoryState extends State<AppointmentHistory> {
             inAsyncCall: false,
             child: Scaffold(
                 appBar: AppBar(
-                  title: Text('Appointments History'),
+                  title: Text(
+                    'my-Appointments',
+                    style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Nunito',
+                    letterSpacing: 0.2,
+                    color:Colors.white,
+                  ),),
+                  centerTitle: true,
                   backgroundColor: Colors.green,
+                  elevation: 0,
                 ),
+
                 backgroundColor: Colors.white,
                 body: Padding(
                   padding: EdgeInsets.only(top: 10, left: 8, right: 8),

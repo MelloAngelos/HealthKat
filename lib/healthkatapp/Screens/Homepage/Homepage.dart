@@ -207,11 +207,11 @@ class _HomepageScreenState extends State<Homepage> {
                               width: 40,
                             ),
                             Text(
-                              'Contacts',
+                              'my-Contacts',
                               style: TextStyle(
-                                fontSize: 40,
+                                fontSize: 35,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'Helvetica Neue',
+                                fontFamily: 'Nunito',
                                 letterSpacing: 0.2,
                               ),
                             )

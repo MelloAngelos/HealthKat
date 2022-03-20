@@ -39,17 +39,17 @@ class _ProfileState extends State<Profile> {
             child: Scaffold(
               appBar: AppBar(
                 title: Text(
-                  'My Profile',
+                  'my-Profile',
                   style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'Helvetica Neue',
+                    fontFamily: 'Nunito',
                     letterSpacing: 0.2,
-                    color:Colors.black,
+                    color:Colors.white,
                     ),
                 ),
                 centerTitle: true,
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.green,
                 elevation: 0,
               ),
               backgroundColor: Colors.white,
@@ -86,15 +86,16 @@ class _ProfileState extends State<Profile> {
                       ),
                       Container(
                           child: Center(
-                        child: Text(
-                          '${Provider.of<CurrentUser>(context, listen: false).displayName}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 28,
-                            fontFamily: 'Roboto',
-                          ),
-                        ),
-                      )),
+                            child: Text(
+                              '${Provider.of<CurrentUser>(context, listen: false).displayName}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28,
+                                fontFamily: 'Roboto',
+                              ),
+                            ),
+                          )
+                      ),
                       Center(
                         child: Text(Provider.of<CurrentUser>(context,
                                         listen: false)
