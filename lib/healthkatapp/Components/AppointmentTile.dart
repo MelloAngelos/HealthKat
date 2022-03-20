@@ -12,10 +12,16 @@ class AppointmentTile extends StatefulWidget {
   final String status;
   final bool changeStatus;
   final bool cancelAp;
+  final bool amDoctor;
   final String dateTime;
+  final Timestamp timeCreated;
+  final String documentID;
   Function onPress;
 
   AppointmentTile({
+    this.documentID,
+    this.timeCreated,
+    this.amDoctor,
     this.userName,
     this.content,
     this.dateTime,
@@ -100,7 +106,9 @@ class _AppointmentTileState extends State<AppointmentTile> {
                 height: 4,
               ),
               Visibility(
-                visible: widget.changeStatus,
+                visible:
+                    (widget.status == 'Approval Pending') & widget.amDoctor ==
+                        true,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
@@ -120,7 +128,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
                       ),
                       onPressed: () async {
                         DocumentReference doctorRef = FirebaseFirestore.instance
-                            .doc('appointments/' + widget.docId);
+                            .doc('appointments/' + widget.documentID);
 
                         await FirebaseFirestore.instance
                             .runTransaction((transaction) async {
@@ -149,7 +157,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
                       ),
                       onPressed: () async {
                         DocumentReference doctorRef = FirebaseFirestore.instance
-                            .doc('appointments/' + widget.docId);
+                            .doc('appointments/' + widget.documentID);
 
                         await FirebaseFirestore.instance
                             .runTransaction((transaction) async {
@@ -182,25 +190,26 @@ class _AppointmentTileState extends State<AppointmentTile> {
                 ),
               ),
               Visibility(
-                visible: widget.cancelAp,
+                visible:
+                    (widget.status == 'Approval Pending') & !widget.amDoctor,
                 child: TextButton(
                   style: TextButton.styleFrom(primary: Colors.red),
                   child: Row(
                     children: <Widget>[
                       Icon(
                         Icons.close,
-                        color: Colors.white,
+                        color: Colors.red,
                       ),
                       Text(
                         'Cancel',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.red),
                       ),
                     ],
                   ),
                   onPressed: () async {
                     try {
                       DocumentReference ref = FirebaseFirestore.instance
-                          .doc('appointments/' + widget.docId);
+                          .doc('appointments/' + widget.documentID);
                       await FirebaseFirestore.instance
                           .runTransaction((Transaction myTransaction) async {
                         await myTransaction.delete(ref);

@@ -25,11 +25,8 @@ class _ViewHistoryState extends State<AppointmentHistory> {
             inAsyncCall: false,
             child: Scaffold(
                 appBar: AppBar(
-                  leading: IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.black),
-                      onPressed: () => Navigator.pop(context)),
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
+                  title: Text('Appointments History'),
+                  backgroundColor: Colors.green,
                 ),
                 backgroundColor: Colors.white,
                 body: Padding(
@@ -37,24 +34,15 @@ class _ViewHistoryState extends State<AppointmentHistory> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        'Appointments History',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF0A0E21),
-                          fontFamily: 'Helvetica Neue',
-                          letterSpacing: 0.2,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
                       StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
                             .collection('appointments')
                             // .orderBy('date')
-                            .where('doctorID',
+                            .where(
+                                Provider.of<CurrentUser>(context, listen: false)
+                                        .isDoctor
+                                    ? 'doctorID'
+                                    : 'uid',
                                 isEqualTo: Provider.of<CurrentUser>(context,
                                         listen: false)
                                     .loggedInUser
@@ -80,6 +68,8 @@ class _ViewHistoryState extends State<AppointmentHistory> {
                             String status = window['appointmentStatus'];
                             final docID = window['doctorID'];
                             final dateTime = window['dateTime'].toDate();
+                            final timeCreated = window['timeCreated'];
+                            final documentId = window.id;
                             bool cancelAp;
 
                             try {
@@ -93,14 +83,18 @@ class _ViewHistoryState extends State<AppointmentHistory> {
 
                             tiles.add(
                               AppointmentTile(
-                                dateTime: dateFormat.format(dateTime),
-                                userName: name,
-                                content: content,
-                                status: status,
-                                docId: docID,
-                                changeStatus: true,
-                                cancelAp: cancelAp,
-                              ),
+                                  amDoctor: Provider.of<CurrentUser>(context,
+                                          listen: false)
+                                      .isDoctor,
+                                  dateTime: dateFormat.format(dateTime),
+                                  userName: name,
+                                  content: content,
+                                  status: status,
+                                  docId: docID,
+                                  changeStatus: true,
+                                  cancelAp: cancelAp,
+                                  timeCreated: timeCreated,
+                                  documentID: documentId),
                             );
                           }
                           return Expanded(

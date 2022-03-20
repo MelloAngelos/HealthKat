@@ -102,7 +102,7 @@ class _NewAppointmentState extends State<NewAppointment> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Book Your Appointment'),
-        backgroundColor: Color(0xFF0A0E21),
+        backgroundColor: Colors.green,
       ),
       body: GestureDetector(
         onTap: () {
